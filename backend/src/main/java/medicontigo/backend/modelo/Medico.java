@@ -1,4 +1,4 @@
-package medicontigo.modelo;
+package medicontigo.backend.modelo;
 
 public class Medico {
     private int id;
