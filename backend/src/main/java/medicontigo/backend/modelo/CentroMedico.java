@@ -1,10 +1,20 @@
 package medicontigo.backend.modelo;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "centro_medico") 
 public class CentroMedico {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String nombre;
     private String tipo;
     private String direccion;
+    public CentroMedico() {
+    }
 
     public CentroMedico(int id, String nombre, String tipo, String direccion) {
         this.id = id;
