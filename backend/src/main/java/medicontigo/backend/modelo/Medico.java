@@ -1,47 +1,48 @@
 package medicontigo.backend.modelo;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "medicos")
 public class Medico {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    
-    private String nombre;
-    private String nColegiatura;
-    private int especialidadId;
+    private Integer id;
 
-    public Medico() {
-    }
+    @Column(name = "nombre_completo", nullable = false, length = 150)
+    private String nombreCompleto;
 
-    public Medico(int id, String nombre, String nColegiatura, int especialidadId) {
-        this.id = id;
-        this.nombre = nombre;
-        this.nColegiatura = nColegiatura;
-        this.especialidadId = especialidadId;
-    }
+    @Column(nullable = false, unique = true, length = 30)
+    private String cmp;
 
-    public int getId() {
-        return id;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "especialidad_id", nullable = false)
+    private Especialidad especialidad;
 
-    public String getNombre() {
-        return nombre;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "centro_id", nullable = false)
+    private CentroMedico centro;
 
-    public String getnColegiatura() {
-        return nColegiatura;
-    }
+    @Column(nullable = false)
+    private boolean activo = true;
 
-    public int getEspecialidadId() {
-        return especialidadId;
-    }
+    @Column(name = "fecha_ingreso", nullable = false)
+    private LocalDate fechaIngreso = LocalDate.now();
 
-    @Override
-    public String toString() {
-        return nombre + " (Número de colegiatura: " + nColegiatura + ")";
-    }
+    public Medico() {}
+
+    public Integer getId() { return id; }
+    public String getNombreCompleto() { return nombreCompleto; }
+    public String getCmp() { return cmp; }
+    public Especialidad getEspecialidad() { return especialidad; }
+    public CentroMedico getCentro() { return centro; }
+    public boolean isActivo() { return activo; }
+    public LocalDate getFechaIngreso() { return fechaIngreso; }
+
+    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
+    public void setCmp(String cmp) { this.cmp = cmp; }
+    public void setEspecialidad(Especialidad especialidad) { this.especialidad = especialidad; }
+    public void setCentro(CentroMedico centro) { this.centro = centro; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 }
