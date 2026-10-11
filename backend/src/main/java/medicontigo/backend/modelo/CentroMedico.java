@@ -1,9 +1,11 @@
 package medicontigo.backend.modelo;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 @Entity
-@Table(name = "centro_medico") 
+@Table(name = "centros_medicos")
 public class CentroMedico {
 
     @Id
@@ -13,6 +15,14 @@ public class CentroMedico {
     private String nombre;
     private String tipo;
     private String direccion;
+
+    @Column(nullable = false, precision = 10, scale = 8)
+    private BigDecimal latitud;
+
+    @Column(nullable = false, precision = 11, scale = 8)
+    private BigDecimal longitud;
+    
+    @JsonCreator
     public CentroMedico() {
     }
 
@@ -38,6 +48,36 @@ public class CentroMedico {
     public String getDireccion() {
         return direccion;
     }
+
+    public BigDecimal getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(BigDecimal latitud) {
+        this.latitud = latitud;
+    }
+
+    public BigDecimal getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(BigDecimal longitud) {
+        this.longitud = longitud;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
 
     @Override
     public String toString() {
