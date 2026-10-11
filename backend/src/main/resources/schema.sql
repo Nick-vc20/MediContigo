@@ -14,3 +14,21 @@ CREATE TABLE centros_medicos (
     estado VARCHAR(20) DEFAULT 'ACTIVO',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS especialidad (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    estado BOOLEAN NOT NULL DEFAULT TRUE
+    );
+
+CREATE TABLE IF NOT EXISTS medicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_completo VARCHAR(150) NOT NULL,
+    cmp VARCHAR(30) NOT NULL UNIQUE,
+    especialidad_id INT NOT NULL,
+    centro_id INT NOT NULL,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    fecha_ingreso DATE NOT NULL,
+
+    FOREIGN KEY (especialidad_id) REFERENCES especialidad(id),
+    FOREIGN KEY (centro_id) REFERENCES centros_medicos(id)
+    );
