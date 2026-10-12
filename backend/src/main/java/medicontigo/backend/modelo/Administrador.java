@@ -11,7 +11,6 @@ public class Administrador {
     @Column(name = "correo")
     private String correo;
 
-    // Si en tu SQL pusiste "contrasena" pero en Java lo llamas "password":
     @Column(name = "contrasena") 
     private String password;
     

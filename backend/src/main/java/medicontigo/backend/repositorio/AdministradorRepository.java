@@ -9,6 +9,5 @@ import medicontigo.backend.modelo.Administrador;
 @Repository
 public interface AdministradorRepository extends JpaRepository<Administrador, Integer> {
 
-    // Spring Data JPA crea la consulta SQL automáticamente leyendo el nombre del método
     Optional<Administrador> findByCorreo(String correo);
 }
