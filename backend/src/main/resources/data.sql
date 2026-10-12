@@ -6,5 +6,4 @@ INSERT INTO centros_medicos
 VALUES
     ('Hospital Lima', 'Hospital', 'Lima', -12.046374, -77.042793);
 
-INSERT INTO especialidad (nombre, estado)
-VALUES ('Medicina General', TRUE);
+INSERT INTO especialidad (nombre, estado, centro_id) VALUES ('Medicina General', TRUE, 1);

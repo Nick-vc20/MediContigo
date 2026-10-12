@@ -9,4 +9,5 @@ public interface MedicoRepository extends JpaRepository<Medico, Integer> {
     boolean existsByCmpAndIdNot(String cmp, Integer id);
     List<Medico> findByCentroIdAndActivoTrue(int centroId);
     List<Medico> findByCentroId(int centroId);
+    long countByEspecialidadIdAndActivoTrue(int especialidadId);
 }

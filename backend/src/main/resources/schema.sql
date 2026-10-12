@@ -14,11 +14,28 @@ CREATE TABLE centros_medicos (
     estado VARCHAR(20) DEFAULT 'ACTIVO',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE TABLE IF NOT EXISTS especialidad (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    centro_id INT NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    estado BOOLEAN NOT NULL DEFAULT TRUE
-    );
+    descripcion VARCHAR(255),
+    estado BOOLEAN NOT NULL DEFAULT TRUE,
+    fecha_actualizacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_esp_centro FOREIGN KEY (centro_id) REFERENCES centros_medicos(id),
+    CONSTRAINT uq_esp_centro_nombre UNIQUE (centro_id, nombre)
+);
+
+CREATE TABLE IF NOT EXISTS horario_especialidad (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    especialidad_id INT NOT NULL,
+    dia_semana INT NOT NULL,          -- 1 = lunes ... 7 = domingo
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    CONSTRAINT fk_hor_esp FOREIGN KEY (especialidad_id) REFERENCES especialidad(id),
+    CONSTRAINT chk_dia CHECK (dia_semana BETWEEN 1 AND 7),
+    CONSTRAINT chk_horas CHECK (hora_fin > hora_inicio)
+);
 
 CREATE TABLE IF NOT EXISTS medicos (
     id INT AUTO_INCREMENT PRIMARY KEY,
