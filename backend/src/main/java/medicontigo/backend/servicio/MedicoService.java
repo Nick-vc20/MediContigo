@@ -3,6 +3,7 @@ package medicontigo.backend.servicio;
 import medicontigo.backend.dto.MedicoRequest;
 import medicontigo.backend.dto.MedicoResponse;
 import medicontigo.backend.modelo.Medico;
+import medicontigo.backend.modelo.Especialidad;
 import medicontigo.backend.repositorio.CentroMedicoRepository;
 import medicontigo.backend.repositorio.EspecialidadRepository;
 import medicontigo.backend.repositorio.MedicoRepository;
@@ -46,6 +47,7 @@ public class MedicoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Centro no encontrado"));
         var especialidad = especialidades.findById(solicitud.especialidadId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Especialidad no encontrada"));
+        validarEspecialidad(especialidad, centroId);
         Medico medico = new Medico();
         medico.setNombreCompleto(solicitud.nombreCompleto().trim());
         medico.setCmp(cmp);
@@ -68,6 +70,7 @@ public class MedicoService {
         }
         var especialidad = especialidades.findById(solicitud.especialidadId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Especialidad no encontrada"));
+        validarEspecialidad(especialidad, centroId);
         medico.setNombreCompleto(solicitud.nombreCompleto().trim());
         medico.setCmp(cmp);
         medico.setEspecialidad(especialidad);
@@ -99,6 +102,15 @@ public class MedicoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Centro no encontrado");
         }
     }
+
+    private void validarEspecialidad(Especialidad especialidad, int centroId) {
+       if (especialidad.getCentro().getId() != centroId) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La especialidad no pertenece a este centro");
+       }
+       if (!especialidad.isEstado()) {
+           throw new ResponseStatusException(HttpStatus.CONFLICT, "La especialidad está inactiva");
+       }
+   }
 
     private void validar(MedicoRequest solicitud) {
         if (solicitud == null || solicitud.nombreCompleto() == null || solicitud.nombreCompleto().isBlank()

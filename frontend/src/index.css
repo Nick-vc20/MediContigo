@@ -1,0 +1,252 @@
+/* ====== Paleta "salud": verde azulado + azul clínico ====== */
+:root {
+  --verde: #0f9d8a;
+  --verde-oscuro: #0b7a6b;
+  --azul: #1f6fb2;
+  --fondo: #eef6f8;
+  --tarjeta: #ffffff;
+  --texto: #1b2b34;
+  --suave: #5b6f7a;
+  --borde: #d9e6ea;
+  --rojo: #c62f3e;
+  --sombra: 0 2px 10px rgba(16, 70, 90, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+  line-height: 1.5;
+}
+
+.contenedor {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+/* ====== Encabezado ====== */
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 1.2rem;
+  padding: 1.1rem 1.5rem;
+  font-size: 1.6rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--verde), var(--azul));
+  border-radius: 14px;
+  box-shadow: var(--sombra);
+}
+
+h1::before {
+  content: "✚";
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.3rem;
+  color: var(--verde);
+  background: #fff;
+  border-radius: 50%;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  color: var(--azul);
+}
+
+/* ====== Formularios ====== */
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.3rem 0;
+  color: var(--suave);
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--verde);
+}
+
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+
+.fila input:not([type="checkbox"]),
+.fila select {
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  color: var(--texto);
+  background: #fbfdfe;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+
+.fila input[placeholder] { flex: 1 1 180px; }
+
+.fila input:focus,
+.fila select:focus {
+  outline: none;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(15, 157, 138, 0.18);
+}
+
+/* ====== Botones ====== */
+button {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.05s;
+}
+
+button:active { transform: translateY(1px); }
+button:focus-visible { outline: 3px solid rgba(31, 111, 178, 0.35); outline-offset: 2px; }
+
+form button[type="submit"] { color: #fff; background: var(--verde); }
+form button[type="submit"]:hover { background: var(--verde-oscuro); }
+
+form button[type="button"] {
+  color: var(--suave);
+  background: #fff;
+  border-color: var(--borde);
+}
+form button[type="button"]:hover { background: #f3f7f8; }
+
+/* Botones dentro de la tabla: Editar / Horarios / Dar de baja */
+td button {
+  margin-right: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  background: #fff;
+}
+td button:nth-child(1) { color: var(--azul); border-color: #b9d3ea; }
+td button:nth-child(1):hover { background: #eef5fb; }
+td button:nth-child(2) { color: var(--verde-oscuro); border-color: #b5e0d9; }
+td button:nth-child(2):hover { background: #effaf8; }
+td button:nth-child(3) { color: var(--rojo); border-color: #f0c0c5; }
+td button:nth-child(3):hover { background: #fdf0f1; }
+
+/* En filas inactivas, "Reactivar" se ve en verde */
+.inactiva td button:nth-child(3) { color: var(--verde-oscuro); border-color: #b5e0d9; }
+.inactiva td button:nth-child(3):hover { background: #effaf8; }
+
+/* ====== Tabla ====== */
+.scroll {
+  overflow-x: auto;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+
+table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 0.8rem 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--verde-oscuro);
+  background: #e6f3f3;
+}
+
+td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-top: 1px solid var(--borde);
+}
+
+td:first-child { font-weight: 600; }
+tbody tr:hover { background: #f6fbfb; }
+
+.inactiva td { color: var(--suave); background: #f7f9fa; }
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--verde-oscuro);
+  background: #d9f4ee;
+  border-radius: 999px;
+}
+.badge.off { color: var(--suave); background: #e8edf0; }
+
+/* ====== Mensajes de error ====== */
+.error {
+  margin: 1rem 0;
+  padding: 0.7rem 1rem;
+  color: #9b1c2a;
+  background: #fdecee;
+  border-left: 4px solid var(--rojo);
+  border-radius: 8px;
+}
+
+/* ====== Panel de horarios ====== */
+section {
+  margin-top: 1.5rem;
+  padding: 1.2rem 1.4rem;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+
+section .fila {
+  margin-top: 0;
+  background: #f4fafb;
+  border: 1px solid var(--borde);
+  box-shadow: none;
+}
+
+ul { margin: 1rem 0 0; padding: 0; list-style: none; }
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--borde);
+}
+li:last-child { border-bottom: 0; }
+
+li button {
+  padding: 0.25rem 0.65rem;
+  font-size: 0.82rem;
+  color: var(--rojo);
+  background: #fff;
+  border-color: #f0c0c5;
+}
+li button:hover { background: #fdf0f1; }
+
+/* ====== Pantallas pequeñas ====== */
+@media (max-width: 600px) {
+  h1 { font-size: 1.3rem; padding: 0.9rem 1rem; }
+  .fila input[placeholder] { flex-basis: 100%; }
+}
