@@ -1,13 +1,24 @@
 package medicontigo.backend.modelo;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "centros_medicos")
 public class CentroMedico {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -73,17 +84,45 @@ public class CentroMedico {
         this.tipo = tipo;
     }
 
-
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-
 
     @Override
     public String toString() {
         return id + " - " + nombre + " (" + tipo + ") - " + direccion;
     }
 
+    @Column(name = "costo_consulta")
+    private double costoConsulta;
 
+    @Column(name = "tiempo_espera")
+    private String tiempoEspera;
 
+    @OneToMany(mappedBy = "centroMedico", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CentroEspecialidad> especialidades;
+
+    public double getCostoConsulta() {
+        return costoConsulta;
+    }
+
+    public void setCostoConsulta(double costoConsulta) {
+        this.costoConsulta = costoConsulta;
+    }
+
+    public String getTiempoEspera() {
+        return tiempoEspera;
+    }
+
+    public void setTiempoEspera(String tiempoEspera) {
+        this.tiempoEspera = tiempoEspera;
+    }
+
+    public List<CentroEspecialidad> getEspecialidades() {
+        return especialidades;
+    }
+
+    public void setEspecialidades(List<CentroEspecialidad> especialidades) {
+        this.especialidades = especialidades;
+    }
 }
