@@ -4,13 +4,16 @@ CREATE TABLE IF NOT EXISTS administrador (
     correo VARCHAR(255) NOT NULL,
     contrasena VARCHAR(255) NOT NULL
 );
-CREATE TABLE centros_medicos (
-    id SERIAL PRIMARY KEY, -- o INT AUTO_INCREMENT si usas H2/MySQL
+
+CREATE TABLE IF NOT EXISTS centros_medicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     direccion VARCHAR(255) NOT NULL,
     latitud DECIMAL(10, 8) NOT NULL,
     longitud DECIMAL(11, 8) NOT NULL,
+    costo_consulta DECIMAL(10,2) DEFAULT 0.00,
+    tiempo_espera VARCHAR(50) DEFAULT 'No especificado',
     estado VARCHAR(20) DEFAULT 'ACTIVO',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -29,7 +32,7 @@ CREATE TABLE IF NOT EXISTS especialidad (
 CREATE TABLE IF NOT EXISTS horario_especialidad (
     id INT AUTO_INCREMENT PRIMARY KEY,
     especialidad_id INT NOT NULL,
-    dia_semana INT NOT NULL,          -- 1 = lunes ... 7 = domingo
+    dia_semana INT NOT NULL,        
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL,
     CONSTRAINT fk_hor_esp FOREIGN KEY (especialidad_id) REFERENCES especialidad(id),
@@ -45,7 +48,6 @@ CREATE TABLE IF NOT EXISTS medicos (
     centro_id INT NOT NULL,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     fecha_ingreso DATE NOT NULL,
-
     FOREIGN KEY (especialidad_id) REFERENCES especialidad(id),
     FOREIGN KEY (centro_id) REFERENCES centros_medicos(id)
-    );
+);

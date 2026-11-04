@@ -3,41 +3,27 @@ package medicontigo.backend.dto;
 import java.util.List;
 
 public class PerfilCentroDTO {
-    
-    private String nombre;
-    private String direccion;
+    private String nombreCentro;      // En lugar de 'nombre'
+    private String direccionCentro;   // En lugar de 'direccion'
     private double costoConsulta;
     private String tiempoEspera;
     private List<String> especialidades;
-    private List<String> horarios;
+    private List<String> resumenHorarios; // En lugar de 'horarios'
 
-    public PerfilCentroDTO() {}
-
-    public PerfilCentroDTO(String nombre, String direccion, double costoConsulta, 
-                           String tiempoEspera, List<String> especialidades, List<String> horarios) {
-        this.nombre = nombre;
-        this.direccion = direccion;
+    public PerfilCentroDTO(String nombreCentro, String direccionCentro, double costoConsulta, 
+                           String tiempoEspera, List<String> especialidades, List<String> resumenHorarios) {
+        this.nombreCentro = nombreCentro;
+        this.direccionCentro = direccionCentro;
         this.costoConsulta = costoConsulta;
         this.tiempoEspera = tiempoEspera;
         this.especialidades = especialidades;
-        this.horarios = horarios;
+        this.resumenHorarios = resumenHorarios;
     }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
-
+    public String getNombreCentro() { return nombreCentro; }
+    public String getDireccionCentro() { return direccionCentro; }
     public double getCostoConsulta() { return costoConsulta; }
-    public void setCostoConsulta(double costoConsulta) { this.costoConsulta = costoConsulta; }
-
     public String getTiempoEspera() { return tiempoEspera; }
-    public void setTiempoEspera(String tiempoEspera) { this.tiempoEspera = tiempoEspera; }
-
     public List<String> getEspecialidades() { return especialidades; }
-    public void setEspecialidades(List<String> especialidades) { this.especialidades = especialidades; }
-
-    public List<String> getHorarios() { return horarios; }
-    public void setHorarios(List<String> horarios) { this.horarios = horarios; }
+    public List<String> getResumenHorarios() { return resumenHorarios; }
 }

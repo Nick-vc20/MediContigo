@@ -2,13 +2,13 @@ package medicontigo.backend.servicio;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import medicontigo.backend.dto.PerfilCentroDTO;
-import medicontigo.backend.modelo.CentroEspecialidad;
 import medicontigo.backend.modelo.CentroMedico;
+import medicontigo.backend.modelo.Especialidad;
 import medicontigo.backend.repositorio.CentroMedicoRepository;
 
 @Service
@@ -17,21 +17,18 @@ public class CentroPublicoService {
     @Autowired
     private CentroMedicoRepository repository;
 
+    @Transactional(readOnly = true)
     public PerfilCentroDTO obtenerPerfilPorId(int id) {
-        CentroMedico centro = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Centro médico no encontrado"));
+        CentroMedico centro = repository.findById(id).orElse(null);
+        if (centro == null) return null;
 
         List<String> nombresEspecialidades = new ArrayList<>();
-        List<String> resumenHorarios = new ArrayList<>();
-
-        List<CentroEspecialidad> especialidades = centro.getEspecialidades();
         
-        for (CentroEspecialidad ce : especialidades) {
-            nombresEspecialidades.add(ce.getEspecialidad().getNombre());
-            
-            String horario = ce.getHorarioResumen();
-            if (!resumenHorarios.contains(horario)) {
-                resumenHorarios.add(horario);
+        if (centro.getEspecialidades() != null) {
+            for (Especialidad esp : centro.getEspecialidades()) {
+                if (esp != null && esp.isEstado() && esp.getNombre() != null) {
+                    nombresEspecialidades.add(esp.getNombre());
+                }
             }
         }
 
@@ -41,7 +38,7 @@ public class CentroPublicoService {
                 centro.getCostoConsulta(),
                 centro.getTiempoEspera(),
                 nombresEspecialidades,
-                resumenHorarios
+                new ArrayList<>() // Horarios si aplica
         );
     }
 }

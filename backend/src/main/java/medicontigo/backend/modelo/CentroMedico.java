@@ -32,7 +32,16 @@ public class CentroMedico {
 
     @Column(nullable = false, precision = 11, scale = 8)
     private BigDecimal longitud;
-    
+
+    @Column(name = "costo_consulta")
+    private double costoConsulta;
+
+    @Column(name = "tiempo_espera")
+    private String tiempoEspera;
+
+    @OneToMany(mappedBy = "centro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Especialidad> especialidades;
+
     @JsonCreator
     public CentroMedico() {
     }
@@ -44,6 +53,7 @@ public class CentroMedico {
         this.direccion = direccion;
     }
 
+
     public int getId() {
         return id;
     }
@@ -52,12 +62,24 @@ public class CentroMedico {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getTipo() {
         return tipo;
     }
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
     public String getDireccion() {
         return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public BigDecimal getLatitud() {
@@ -76,32 +98,6 @@ public class CentroMedico {
         this.longitud = longitud;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    @Override
-    public String toString() {
-        return id + " - " + nombre + " (" + tipo + ") - " + direccion;
-    }
-
-    @Column(name = "costo_consulta")
-    private double costoConsulta;
-
-    @Column(name = "tiempo_espera")
-    private String tiempoEspera;
-
-    @OneToMany(mappedBy = "centroMedico", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CentroEspecialidad> especialidades;
-
     public double getCostoConsulta() {
         return costoConsulta;
     }
@@ -118,11 +114,16 @@ public class CentroMedico {
         this.tiempoEspera = tiempoEspera;
     }
 
-    public List<CentroEspecialidad> getEspecialidades() {
+    public List<Especialidad> getEspecialidades() {
         return especialidades;
     }
 
-    public void setEspecialidades(List<CentroEspecialidad> especialidades) {
+    public void setEspecialidades(List<Especialidad> especialidades) {
         this.especialidades = especialidades;
+    }
+
+    @Override
+    public String toString() {
+        return id + " - " + nombre + " (" + tipo + ") - " + direccion;
     }
 }
