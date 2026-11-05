@@ -1,47 +1,71 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
+
 import Login from "./components/Login";
 import Administrador from "./components/Administrador";
 import Especialidades from "./components/Especialidades";
+import MapaCentros from "./components/MapaCentros";
 import PerfilCentroPublico from "./components/PerfilCentroPublico";
+
 import "./App.css";
 
 export default function App() {
-  const [logueado, setLogueado] = useState(localStorage.getItem("token") !== null);
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        
-        {/* ==========================================
-            1. ZONA PÚBLICA (Pacientes) 
-            Usa :id dinámico para leer el centro desde la URL
-        ========================================== */}
-        <Route path="/centro/:id" element={<PerfilCentroPublico />} />
-        
-        {/* ==========================================
-            2. ZONA PRIVADA (Administradores) 
-        ========================================== */}
-        <Route 
-          path="/admin" 
-          element={
-            logueado ? (
-              <>
-                <Administrador alCerrarSesion={() => setLogueado(false)} />
-                <Especialidades centroId={1} />
-              </>
-            ) : (
-              <Login alIniciarSesion={() => setLogueado(true)} />
-            )
-          } 
-        />
+    const [logueado, setLogueado] = useState(
+        localStorage.getItem("token") !== null
+    );
 
-        {/* ==========================================
-            3. REDIRECCIÓN POR DEFECTO
-        ========================================== */}
-        <Route path="*" element={<Navigate to="/admin" />} />
+    return (
+        <BrowserRouter>
+            <Routes>
 
-      </Routes>
-    </BrowserRouter>
-  );
+                {/* HU-05: Mapa de centros medicos */}
+                <Route
+                    path="/"
+                    element={
+                        <div>
+                            <Link to="/admin">Ingresar como administrador</Link>
+                            <MapaCentros />
+                        </div>
+                    }
+                />
+
+                {/* HU-06: Perfil publico de un centro medico */}
+                <Route
+                    path="/centro/:id"
+                    element={<PerfilCentroPublico />}
+                />
+
+                {/* Panel de administradores */}
+                <Route
+                    path="/admin"
+                    element={
+                        logueado ? (
+                            <>
+                                <Link to="/">Ver mapa de centros medicos</Link>
+
+                                <Administrador
+                                    alCerrarSesion={() => setLogueado(false)}
+                                />
+
+                                <Especialidades centroId={1} />
+                            </>
+                        ) : (
+                            <Login
+                                alIniciarSesion={() => setLogueado(true)}
+                            />
+                        )
+                    }
+                />
+
+                {/* Redireccion a la pagina principal */}
+                <Route
+                    path="*"
+                    element={<Navigate to="/" replace />}
+                />
+
+            </Routes>
+        </BrowserRouter>
+    );
 }
