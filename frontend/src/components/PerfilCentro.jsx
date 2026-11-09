@@ -4,9 +4,7 @@ import { obtenerPerfilCentro } from '../api/centrosApi';
 import { atiendeHoy, formatoCosto, ocupacionDe, resumirHorarios, urlComoLlegar } from '../utils/formato';
 import '../perfil.css';
 
-// Perfil completo de un centro. Se usa en dos lugares:
-//  - dentro del panel del mapa (compacto, con boton "Volver")
-//  - en la pagina publica /centro/:id
+
 export default function PerfilCentro({ id, compacto = false, alVolver }) {
   // resultado = { id, perfil, error } del ultimo pedido terminado
   const [resultado, setResultado] = useState(null);
@@ -14,8 +12,7 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
   const contenedor = useRef(null);
 
   useEffect(() => {
-    let vigente = true; // evita mostrar una respuesta vieja si el usuario cambia de centro
-
+    let vigente = true;
     obtenerPerfilCentro(id)
       .then((datos) => {
         if (vigente) setResultado({ id: String(id), perfil: datos, error: '' });
@@ -31,7 +28,6 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
     return () => { vigente = false; };
   }, [id, intento]);
 
-  // Mientras no llegue la respuesta de este centro se muestra "cargando"
   const cargando = resultado === null || resultado.id !== String(id);
   const perfil = cargando ? null : resultado.perfil;
   const error = cargando ? '' : resultado.error;
@@ -41,7 +37,6 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
     setIntento(intento + 1);
   };
 
-  // Al abrir el perfil se lleva el foco al contenido (lectores de pantalla y teclado)
   useEffect(() => {
     if (perfil && compacto) contenedor.current?.focus();
   }, [perfil, compacto]);

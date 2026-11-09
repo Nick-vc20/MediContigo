@@ -8,10 +8,8 @@ import { TIPOS_LEYENDA, estiloTipo, formatoCosto, ocupacionDe } from "../utils/f
 import PerfilCentro from "./PerfilCentro";
 import "../mapa.css";
 
-// Si no hay GPS se muestran los centros cerca de Lima Centro
 const ORIGEN_POR_DEFECTO = [-12.046374, -77.042793];
 
-// Los iconos se guardan para no recrearlos en cada render
 const iconos = {};
 
 function crearIcono(tipo, seleccionado) {
@@ -31,7 +29,6 @@ function crearIcono(tipo, seleccionado) {
     return iconos[clave];
 }
 
-// Ajusta el mapa para que se vean la ubicacion y todos los centros encontrados
 function AjustarVista({ origen, centros }) {
     const mapa = useMap();
 
@@ -47,7 +44,6 @@ function AjustarVista({ origen, centros }) {
     return null;
 }
 
-// Acerca el mapa al centro elegido
 function Enfocar({ centro }) {
     const mapa = useMap();
 
@@ -75,7 +71,6 @@ function MapaCentros() {
     const [seleccionadoId, setSeleccionadoId] = useState(null);
     const panel = useRef(null);
 
-    // 1. Ubicacion del usuario
     useEffect(() => {
         if (!navigator.geolocation) {
             setMensajeGPS("Tu navegador no permite obtener la ubicacion. Puedes buscar una direccion.");
@@ -98,7 +93,6 @@ function MapaCentros() {
         );
     }, []);
 
-    // 2. Centros cercanos al origen
     useEffect(() => {
         if (!origen) {
             return;
@@ -168,7 +162,6 @@ function MapaCentros() {
     function seleccionar(id) {
         setSeleccionadoId(id);
 
-        // En celular el panel queda debajo del mapa: se baja hasta el
         if (window.innerWidth < 900) {
             setTimeout(() => panel.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
         }

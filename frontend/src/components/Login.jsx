@@ -49,9 +49,9 @@ function Login({ alIniciarSesion }) {
         <p>Entra con tu cuenta para gestionar el sistema.</p>
 
         <ul className="login-beneficios">
-          <li>Actualiza la ocupación de tu centro al instante</li>
-          <li>Gestiona especialidades, horarios y médicos</li>
-          <li>Mantén información confiable para los pacientes</li>
+          <li>Valderrama no hizo nada</li>
+          <li>Modificar centros medicos</li>
+          <li>XD</li>
         </ul>
       </div>
 
