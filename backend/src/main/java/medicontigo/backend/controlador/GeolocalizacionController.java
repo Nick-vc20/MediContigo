@@ -1,7 +1,6 @@
-
 package medicontigo.backend.controlador;
 
-import medicontigo.backend.modelo.CentroMedico;
+import medicontigo.backend.dto.CentroMapaResponse;
 import medicontigo.backend.servicio.GeolocalizacionService;
 
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,7 @@ public class GeolocalizacionController {
             @RequestParam(defaultValue = "5") double radio) {
 
         try {
-            List<CentroMedico> centros =
+            List<CentroMapaResponse> centros =
                     geolocalizacionService.buscarCercanos(lat, lng, radio);
 
             return ResponseEntity.ok(centros);

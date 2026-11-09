@@ -1,0 +1,131 @@
+/* ====== Perfil publico del centro (HU-06) ====== */
+.perfil-pagina {
+  max-width: 820px;
+  margin: 1rem auto 0;
+  padding: 1.4rem;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  box-shadow: var(--sombra);
+}
+
+.perfil:focus { outline: none; }
+
+.perfil-volver {
+  margin-bottom: 0.6rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--azul);
+  background: #fff;
+  border-color: #b9d3ea;
+}
+.perfil-volver:hover { background: #eef5fb; }
+
+.perfil-reintentar { color: #fff; background: var(--verde); }
+.perfil-esqueleto { padding: 2rem 0; text-align: center; color: var(--suave); }
+
+/* ----- Cabecera ----- */
+.perfil-cabecera { margin-bottom: 0.8rem; }
+.perfil-tipo {
+  display: inline-block;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--verde-oscuro);
+  background: #d9f4ee;
+  border-radius: 999px;
+}
+.perfil-nombre { margin: 0.4rem 0 0.1rem; font-size: 1.5rem; color: var(--texto); }
+.perfil-direccion { margin: 0; color: var(--suave); }
+
+/* ----- Botones de accion ----- */
+.perfil-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.perfil-boton {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--azul);
+  background: #fff;
+  border: 1px solid #b9d3ea;
+  border-radius: 8px;
+}
+.perfil-boton:hover { background: #eef5fb; }
+.perfil-boton.principal { color: #fff; background: var(--verde); border-color: var(--verde); }
+.perfil-boton.principal:hover { background: var(--verde-oscuro); }
+
+/* ----- Datos rapidos ----- */
+.perfil-datos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; }
+.perfil-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 0.8rem;
+  background: #f4fafb;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+}
+.perfil-dato span { font-size: 0.78rem; color: var(--suave); }
+.perfil-dato strong { font-size: 1rem; }
+.perfil-dato .ocupacion { align-self: flex-start; }
+
+/* ----- Especialidades ----- */
+.perfil-titulo { margin: 1.3rem 0 0.6rem; font-size: 1.05rem; color: var(--azul); }
+
+.perfil-especialidad {
+  margin-bottom: 0.5rem;
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+}
+.perfil-especialidad summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.perfil-especialidad summary:focus-visible { outline: 3px solid rgba(31, 111, 178, 0.35); border-radius: 10px; }
+.perfil-especialidad[open] summary { border-bottom: 1px solid var(--borde); }
+
+.perfil-hoy {
+  padding: 0.1rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--verde-oscuro);
+  background: #d9f4ee;
+  border-radius: 999px;
+}
+
+.perfil-especialidad-cuerpo { padding: 0.7rem 0.9rem 0.9rem; }
+.perfil-descripcion { margin: 0 0 0.6rem; color: var(--suave); }
+.perfil-especialidad-cuerpo h4 {
+  margin: 0.8rem 0 0.3rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--verde-oscuro);
+}
+
+.perfil-horario,
+.perfil-medico {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+}
+.perfil-horario.es-hoy { background: #e6f7f3; }
+.perfil-horario.es-hoy span::after { content: " (hoy)"; color: var(--verde-oscuro); font-weight: 600; }
+.perfil-medico small { color: var(--suave); }
+
+.perfil-vacio { margin: 0.3rem 0; color: var(--suave); font-size: 0.9rem; }
+.perfil-aviso { margin: 1rem 0 0; font-size: 0.8rem; color: var(--suave); }
+
+@media (max-width: 600px) {
+  .perfil-pagina { padding: 1rem; border-radius: 10px; }
+  .perfil-nombre { font-size: 1.25rem; }
+}

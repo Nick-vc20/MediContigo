@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import "../login.css";
+import React from 'react';
+import { ControlOcupacion } from './ControlOcupacion';
 
 function Panel({ alCerrarSesion }) {
   const [mensaje, setMensaje] = useState("Cargando...");
+  
+  // Extraemos el token fuera del useEffect para poder pasárselo al Control de Ocupación
+  const token = localStorage.getItem("token"); 
 
   useEffect(() => {
     async function cargarPanel() {
-      const token = localStorage.getItem("token");
-
       try {
         const respuesta = await fetch("http://localhost:8081/api/panel", {
           headers: { Authorization: "Bearer " + token },
@@ -28,7 +31,7 @@ function Panel({ alCerrarSesion }) {
     }
 
     cargarPanel();
-  }, []);
+  }, [token, alCerrarSesion]);
 
   function cerrarSesion() {
     localStorage.removeItem("token");
@@ -46,10 +49,21 @@ function Panel({ alCerrarSesion }) {
 
       <div className="panel-contenido">
         <h1>Bienvenido, administrador</h1>
+        
         <div className="panel-tarjeta">
           <h3>Respuesta del servidor</h3>
           <p>{mensaje}</p>
         </div>
+
+        {/* 10.1 y 10.3: AQUÍ SE INSERTA EL CONTROL DE OCUPACIÓN */}
+        <div className="panel-tarjeta" style={{ marginTop: '20px' }}>
+          <ControlOcupacion 
+            centroId={1} 
+            ocupacionInicial="BAJO" 
+            tokenAdmin={token} 
+          />
+        </div>
+
       </div>
     </div>
   );

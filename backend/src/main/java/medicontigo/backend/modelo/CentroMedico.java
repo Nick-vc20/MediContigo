@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ public class CentroMedico {
     private String nombre;
     private String tipo;
     private String direccion;
+    private String telefono;
 
     @Column(nullable = false, precision = 10, scale = 8)
     private BigDecimal latitud;
@@ -39,6 +41,11 @@ public class CentroMedico {
     @Column(name = "tiempo_espera")
     private String tiempoEspera;
 
+    @Column(name = "nivel_ocupacion")
+    private String nivelOcupacion = "BAJO";
+    
+    // No se serializa: Especialidad apunta de vuelta al centro y generaria un bucle en el JSON
+    @JsonIgnore
     @OneToMany(mappedBy = "centro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Especialidad> especialidades;
 
@@ -82,6 +89,14 @@ public class CentroMedico {
         this.direccion = direccion;
     }
 
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public BigDecimal getLatitud() {
         return latitud;
     }
@@ -121,7 +136,12 @@ public class CentroMedico {
     public void setEspecialidades(List<Especialidad> especialidades) {
         this.especialidades = especialidades;
     }
-
+    public String getNivelOcupacion() {
+        return nivelOcupacion;
+    }
+    public void setNivelOcupacion(String nivelOcupacion) {
+        this.nivelOcupacion = nivelOcupacion;
+    }
     @Override
     public String toString() {
         return id + " - " + nombre + " (" + tipo + ") - " + direccion;

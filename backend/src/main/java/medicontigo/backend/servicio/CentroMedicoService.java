@@ -1,11 +1,12 @@
 
 package medicontigo.backend.servicio;
 
-import medicontigo.backend.modelo.CentroMedico;
-import medicontigo.backend.repositorio.CentroMedicoRepository;
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import medicontigo.backend.modelo.CentroMedico;
+import medicontigo.backend.repositorio.CentroMedicoRepository;
 
 @Service
 public class CentroMedicoService {
@@ -61,4 +62,5 @@ public class CentroMedicoService {
         // Guardar en la base de datos
         return centroMedicoRepository.save(centro);
     }
+
 }

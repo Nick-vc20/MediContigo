@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS centros_medicos (
     costo_consulta DECIMAL(10,2) DEFAULT 0.00,
     tiempo_espera VARCHAR(50) DEFAULT 'No especificado',
     estado VARCHAR(20) DEFAULT 'ACTIVO',
+    telefono VARCHAR(30),
+    nivel_ocupacion VARCHAR(10) DEFAULT 'BAJO',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

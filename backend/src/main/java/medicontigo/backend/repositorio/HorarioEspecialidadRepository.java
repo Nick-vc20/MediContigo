@@ -7,4 +7,7 @@ import java.util.List;
 public interface HorarioEspecialidadRepository extends JpaRepository<HorarioEspecialidad, Integer> {
     List<HorarioEspecialidad> findByEspecialidadIdOrderByDiaSemanaAscHoraInicioAsc(int especialidadId);
     List<HorarioEspecialidad> findByEspecialidadIdAndDiaSemana(int especialidadId, int diaSemana);
+
+    // Todos los horarios de un centro (HU-06): evita consultar especialidad por especialidad
+    List<HorarioEspecialidad> findByEspecialidadCentroIdOrderByDiaSemanaAscHoraInicioAsc(int centroId);
 }

@@ -1,121 +1,129 @@
-
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { MapContainer, TileLayer, Marker, Tooltip, CircleMarker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { buscarCentrosCercanos } from "../api/centrosApi";
+import { estiloTipo, formatoCosto, ocupacionDe } from "../utils/formato";
+import PerfilCentro from "./PerfilCentro";
+import "../mapa.css";
 
+// Si no hay GPS se muestran los centros cerca de Lima Centro
+const ORIGEN_POR_DEFECTO = [-12.046374, -77.042793];
 
-function crearIcono(tipo) {
+// Los iconos se guardan para no recrearlos en cada render
+const iconos = {};
 
-    const nombre = (tipo || "").toLowerCase();
+function crearIcono(tipo, seleccionado) {
+    const { color, letra } = estiloTipo(tipo);
+    const clave = `${letra}-${seleccionado}`;
 
-    let color = "#6b7280";
-    let letra = "+";
-
-    if (nombre.includes("hospital")) {
-        color = "#dc2626";
-        letra = "H";
-    } else if (nombre.includes("clínica") || nombre.includes("clinica")) {
-        color = "#2563eb";
-        letra = "C";
-    } else if (nombre.includes("posta")) {
-        color = "#16a34a";
-        letra = "P";
+    if (!iconos[clave]) {
+        const tam = seleccionado ? 42 : 32;
+        iconos[clave] = L.divIcon({
+            className: "",
+            html: `<div class="marcador ${seleccionado ? "marcador-activo" : ""}"
+                style="background:${color};width:${tam}px;height:${tam}px">${letra}</div>`,
+            iconSize: [tam, tam],
+            iconAnchor: [tam / 2, tam / 2]
+        });
     }
-
-    return L.divIcon({
-        className: "",
-        html: `<div style="
-      background: ${color};
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 3px solid white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      box-shadow: 0 2px 6px #888;
-    ">${letra}</div>`,
-        iconSize: [38, 38],
-        iconAnchor: [19, 19]
-    });
+    return iconos[clave];
 }
 
+// Ajusta el mapa para que se vean la ubicacion y todos los centros encontrados
+function AjustarVista({ origen, centros }) {
+    const mapa = useMap();
 
-// Ubicacion inicial de prueba
-const ubicacion = [-12.05605, -77.01573];
+    useEffect(() => {
+        const puntos = [origen, ...centros.map(c => [Number(c.latitud), Number(c.longitud)])];
+        if (puntos.length === 1) {
+            mapa.setView(origen, 14);
+            return;
+        }
+        mapa.fitBounds(L.latLngBounds(puntos), { padding: [40, 40], maxZoom: 15 });
+    }, [origen, centros, mapa]);
+
+    return null;
+}
+
+// Acerca el mapa al centro elegido
+function Enfocar({ centro }) {
+    const mapa = useMap();
+
+    useEffect(() => {
+        if (centro) {
+            mapa.flyTo([Number(centro.latitud), Number(centro.longitud)],
+                Math.max(mapa.getZoom(), 15), { duration: 0.6 });
+        }
+    }, [centro, mapa]);
+
+    return null;
+}
 
 function MapaCentros() {
 
-    const [centros, setCentros] = useState([]);
-    const [error, setError] = useState("");
-    const [cargando, setCargando] = useState(false);
-    const [ubicacionUsuario, setUbicacionUsuario] = useState(null);
+    const [origen, setOrigen] = useState(null);
+    const [etiquetaOrigen, setEtiquetaOrigen] = useState("");
     const [mensajeGPS, setMensajeGPS] = useState("");
     const [radio, setRadio] = useState(5);
+    const [centros, setCentros] = useState([]);
+    const [cargando, setCargando] = useState(false);
+    const [error, setError] = useState("");
     const [direccionManual, setDireccionManual] = useState("");
     const [buscandoDireccion, setBuscandoDireccion] = useState(false);
+    const [seleccionadoId, setSeleccionadoId] = useState(null);
+    const panel = useRef(null);
 
+    // 1. Ubicacion del usuario
     useEffect(() => {
         if (!navigator.geolocation) {
-            setMensajeGPS("Tu navegador no permite obtener la ubicacion");
+            setMensajeGPS("Tu navegador no permite obtener la ubicacion. Puedes buscar una direccion.");
+            setOrigen(ORIGEN_POR_DEFECTO);
+            setEtiquetaOrigen("Lima Centro");
             return;
         }
 
         navigator.geolocation.getCurrentPosition(
             (posicion) => {
-                const lat = posicion.coords.latitude;
-                const lng = posicion.coords.longitude;
-
-                setUbicacionUsuario([lat, lng]);
+                setOrigen([posicion.coords.latitude, posicion.coords.longitude]);
+                setEtiquetaOrigen("Tu ubicación actual");
             },
             () => {
-                setMensajeGPS("No se pudo obtener tu ubicacion. Puedes buscar manualmente.");
+                setMensajeGPS("No se pudo obtener tu ubicacion. Puedes buscar una direccion.");
+                setOrigen(ORIGEN_POR_DEFECTO);
+                setEtiquetaOrigen("Lima Centro");
             },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000
-            }
+            { enableHighAccuracy: true, timeout: 10000 }
         );
     }, []);
 
-
+    // 2. Centros cercanos al origen
     useEffect(() => {
-
-        if (!ubicacionUsuario) {
+        if (!origen) {
             return;
         }
 
-        const lat = ubicacionUsuario[0];
-        const lng = ubicacionUsuario[1];
-
+        let vigente = true;
         setCargando(true);
         setError("");
 
-        fetch(`http://localhost:8081/api/centros?lat=${lat}&lng=${lng}&radio=${radio}`)
-            .then(respuesta => {
-                if (!respuesta.ok) {
-                    throw new Error("Error al consultar los centros");
-                }
-                return respuesta.json();
-            })
+        buscarCentrosCercanos(origen[0], origen[1], radio)
             .then(datos => {
-                setCentros(datos);
+                if (vigente) setCentros(datos);
             })
             .catch(() => {
-                setError("No se pudieron cargar los centros medicos");
+                if (vigente) {
+                    setCentros([]);
+                    setError("No se pudieron cargar los centros medicos");
+                }
             })
             .finally(() => {
-                setCargando(false);
+                if (vigente) setCargando(false);
             });
 
-    }, [ubicacionUsuario, radio]);
-
+        return () => { vigente = false; };
+    }, [origen, radio]);
 
     async function buscarDireccion(e) {
         e.preventDefault();
@@ -128,10 +136,9 @@ function MapaCentros() {
         setError("");
 
         try {
-            const direccion = encodeURIComponent(direccionManual);
-
+            const consulta = encodeURIComponent(direccionManual);
             const respuesta = await fetch(
-                `https://nominatim.openstreetmap.org/search?q=${direccion}&format=jsonv2&limit=1`
+                `https://nominatim.openstreetmap.org/search?q=${consulta}&format=jsonv2&limit=1&countrycodes=pe`
             );
 
             if (!respuesta.ok) {
@@ -145,108 +152,164 @@ function MapaCentros() {
                 return;
             }
 
-            const lat = Number(datos[0].lat);
-            const lng = Number(datos[0].lon);
-
-            setUbicacionUsuario([lat, lng]);
+            setOrigen([Number(datos[0].lat), Number(datos[0].lon)]);
+            setEtiquetaOrigen(direccionManual.trim());
+            setMensajeGPS("");
+            setSeleccionadoId(null);
             setRadio(5);
 
-        } catch (error) {
+        } catch {
             setError("No se pudo buscar la direccion");
         } finally {
             setBuscandoDireccion(false);
         }
     }
 
+    function seleccionar(id) {
+        setSeleccionadoId(id);
+
+        // En celular el panel queda debajo del mapa: se baja hasta el
+        if (window.innerWidth < 900) {
+            setTimeout(() => panel.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+        }
+    }
+
+    const seleccionado = useMemo(
+        () => centros.find(c => c.id === seleccionadoId) || null,
+        [centros, seleccionadoId]
+    );
 
     return (
-        <div>
-            <h2>Centros medicos cercanos</h2>
-            <p>Radio de búsqueda: {radio} km</p>
+        <div className="mapa-pagina">
 
-            {ubicacionUsuario && (
-                <p>
-                    Tu ubicacion: {ubicacionUsuario[0].toFixed(6)},
-                    {ubicacionUsuario[1].toFixed(6)}
-                </p>
-            )}
+            <div className="mapa-barra">
+                <div>
+                    <h2>Centros médicos cercanos</h2>
+                    {origen && <p className="mapa-origen">Buscando cerca de: <b>{etiquetaOrigen}</b></p>}
+                </div>
 
-            {mensajeGPS && <p>{mensajeGPS}</p>}
+                <div className="mapa-controles">
+                    <div className="mapa-radio" role="group" aria-label="Radio de búsqueda">
+                        {[5, 10].map(km => (
+                            <button
+                                key={km}
+                                type="button"
+                                className={radio === km ? "activo" : ""}
+                                aria-pressed={radio === km}
+                                onClick={() => setRadio(km)}
+                            >
+                                {km} km
+                            </button>
+                        ))}
+                    </div>
 
-            {mensajeGPS && (
-                <form onSubmit={buscarDireccion}>
-                    <input
-                        type="text"
-                        placeholder="Ejemplo: Cercado de Lima, Perú"
-                        value={direccionManual}
-                        onChange={(e) => setDireccionManual(e.target.value)}
-                    />
+                    <form className="mapa-buscador" onSubmit={buscarDireccion}>
+                        <input
+                            type="text"
+                            aria-label="Buscar otra zona"
+                            placeholder="Buscar otra zona: Cercado de Lima, Perú"
+                            value={direccionManual}
+                            onChange={(e) => setDireccionManual(e.target.value)}
+                        />
+                        <button type="submit" disabled={buscandoDireccion}>
+                            {buscandoDireccion ? "Buscando..." : "Buscar"}
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-                    <button type="submit" disabled={buscandoDireccion}>
-                        {buscandoDireccion ? "Buscando..." : "Buscar direccion"}
-                    </button>
-                </form>
-            )}
+            {mensajeGPS && <p className="mapa-aviso">{mensajeGPS}</p>}
+            {error && <p className="error" role="alert">{error}</p>}
 
+            <div className="mapa-cuerpo">
 
-            {cargando && <p>Cargando centros medicos...</p>}
+                {/* Panel lateral: lista de centros o perfil del centro elegido */}
+                <aside className="mapa-panel" ref={panel}>
+                    {seleccionadoId ? (
+                        <PerfilCentro
+                            id={seleccionadoId}
+                            compacto
+                            alVolver={() => setSeleccionadoId(null)}
+                        />
+                    ) : (
+                        <>
+                            <h3 className="mapa-panel-titulo">
+                                {cargando ? "Buscando..." : `${centros.length} centros en ${radio} km`}
+                            </h3>
 
-            {error && <p>{error}</p>}
-            {!cargando && !error && ubicacionUsuario && centros.length === 0 && (
-                <p>No se encontraron centros en tu área.</p>
-            )}
+                            {!cargando && !error && centros.length === 0 && (
+                                <p className="perfil-vacio">
+                                    No se encontraron centros en tu área. Prueba ampliando el radio a 10 km.
+                                </p>
+                            )}
 
-            {radio === 5 && (
-                <button onClick={() => setRadio(10)}>
-                    Ampliar búsqueda a 10 km
-                </button>
-            )}
+                            {centros.map(centro => {
+                                const { color, letra } = estiloTipo(centro.tipo);
+                                const ocupacion = ocupacionDe(centro.nivelOcupacion);
 
-            {radio === 10 && (
-                <button onClick={() => setRadio(5)}>
-                    Volver a 5 km
-                </button>
-            )}
+                                return (
+                                    <button
+                                        key={centro.id}
+                                        type="button"
+                                        className="centro-item"
+                                        onClick={() => seleccionar(centro.id)}
+                                    >
+                                        <span className="centro-item-icono" style={{ background: color }}>{letra}</span>
+                                        <span className="centro-item-info">
+                                            <strong>{centro.nombre}</strong>
+                                            <small>{centro.direccion}</small>
+                                            <small>
+                                                {centro.distanciaKm.toFixed(1)} km · {formatoCosto(centro.costoConsulta)} · espera {centro.tiempoEspera}
+                                            </small>
+                                        </span>
+                                        <span className={`ocupacion ocupacion-${ocupacion.clase}`}>{ocupacion.etiqueta}</span>
+                                    </button>
+                                );
+                            })}
+                        </>
+                    )}
+                </aside>
 
-            <MapContainer
-                key={ubicacionUsuario ? ubicacionUsuario.join(",") : "inicial"}
-                center={ubicacionUsuario || ubicacion}
-                zoom={14}
-                style={{ height: "450px", width: "100%" }}
-            >
-                <TileLayer
-                    attribution='&copy; OpenStreetMap contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                {ubicacionUsuario && (
-                    <CircleMarker
-                        center={ubicacionUsuario}
-                        radius={9}
-                        pathOptions={{
-                            color: "white",
-                            fillColor: "#2563eb",
-                            fillOpacity: 1,
-                            weight: 3
-                        }}
-                    >
-                        <Popup>Tu ubicación actual</Popup>
-                    </CircleMarker>
-                )}
+                <div className="mapa-mapa">
+                    {origen && (
+                        <MapContainer
+                            key={origen.join(",")}
+                            center={origen}
+                            zoom={14}
+                            style={{ height: "100%", width: "100%" }}
+                        >
+                            <TileLayer
+                                attribution='&copy; OpenStreetMap contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
 
-                {centros.map(centro => (
-                    <Marker
-                        key={centro.id}
-                        position={[centro.latitud, centro.longitud]}
-                        icon={crearIcono(centro.tipo)}
-                    >
-                        <Popup>
-                            <b>{centro.nombre}</b>
-                            <p>Tipo: {centro.tipo}</p>
-                            <p>Direccion: {centro.direccion}</p>
-                        </Popup>
-                    </Marker>
-                ))}
-            </MapContainer>
+                            <AjustarVista origen={origen} centros={centros} />
+                            <Enfocar centro={seleccionado} />
+
+                            <CircleMarker
+                                center={origen}
+                                radius={9}
+                                pathOptions={{ color: "white", fillColor: "#2563eb", fillOpacity: 1, weight: 3 }}
+                            >
+                                <Tooltip>{etiquetaOrigen}</Tooltip>
+                            </CircleMarker>
+
+                            {centros.map(centro => (
+                                <Marker
+                                    key={centro.id}
+                                    position={[centro.latitud, centro.longitud]}
+                                    icon={crearIcono(centro.tipo, centro.id === seleccionadoId)}
+                                    title={centro.nombre}
+                                    eventHandlers={{ click: () => seleccionar(centro.id) }}
+                                >
+                                    <Tooltip direction="top" offset={[0, -16]}>{centro.nombre}</Tooltip>
+                                </Marker>
+                            ))}
+                        </MapContainer>
+                    )}
+                </div>
+
+            </div>
         </div>
     );
 }

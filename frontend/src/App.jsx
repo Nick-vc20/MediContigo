@@ -25,7 +25,9 @@ export default function App() {
                     path="/"
                     element={
                         <div>
-                            <Link to="/admin">Ingresar como administrador</Link>
+                            <div className="mapa-enlace">
+                                <Link to="/admin">Ingresar como administrador</Link>
+                            </div>
                             <MapaCentros />
                         </div>
                     }

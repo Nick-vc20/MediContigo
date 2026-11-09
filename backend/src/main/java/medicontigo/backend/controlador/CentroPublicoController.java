@@ -1,30 +1,28 @@
 package medicontigo.backend.controlador;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import medicontigo.backend.dto.PerfilCentroDTO;
+import medicontigo.backend.dto.PerfilCentroResponse;
 import medicontigo.backend.servicio.CentroPublicoService;
 
+// HU-06: consulta publica (sin login) del perfil completo de un centro.
+// El CORS se configura en CorsConfig para todos los /api/**.
 @RestController
 @RequestMapping("/api/publico/centros")
-@CrossOrigin(origins = "*")
 public class CentroPublicoController {
 
-    @Autowired
-    private CentroPublicoService servicio;
+    private final CentroPublicoService servicio;
 
+    public CentroPublicoController(CentroPublicoService servicio) {
+        this.servicio = servicio;
+    }
+
+    // Si el centro no existe el servicio responde 404
     @GetMapping("/{id}")
-    public ResponseEntity<PerfilCentroDTO> obtenerPerfilConsolidado(@PathVariable int id) {
-        PerfilCentroDTO perfil = servicio.obtenerPerfilPorId(id);
-        if (perfil != null) {
-            return ResponseEntity.ok(perfil);
-        }
-        return ResponseEntity.notFound().build();
+    public PerfilCentroResponse obtenerPerfil(@PathVariable int id) {
+        return servicio.obtenerPerfil(id);
     }
 }
