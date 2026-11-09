@@ -1,0 +1,115 @@
+
+/* HU-13: Formulario de reseñas */
+
+.resena-contenedor {
+    margin-top: 28px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.resena-contenedor h3 {
+    margin: 0 0 8px;
+    color: #1e3a5f;
+    font-size: 20px;
+}
+
+.resena-contenedor p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.resena-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.resena-formulario label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.resena-formulario input,
+.resena-formulario textarea {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.resena-formulario textarea {
+    resize: vertical;
+}
+
+.resena-formulario input:focus,
+.resena-formulario textarea:focus {
+    outline: 2px solid #93c5fd;
+    border-color: #2563eb;
+}
+
+.resena-estrellas {
+    display: flex;
+    gap: 6px;
+}
+
+.resena-estrellas .estrella {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.2s;
+}
+
+.resena-estrellas .estrella:hover {
+    transform: scale(1.2);
+}
+
+.resena-estrellas .estrella:focus-visible {
+    outline: 2px solid #2563eb;
+    border-radius: 6px;
+}
+
+.resena-enviar {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.resena-enviar:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.resena-enviar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.resena-error {
+    color: #b91c1c !important;
+    font-size: 14px;
+}
+
+.resena-exito {
+    color: #15803d !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .resena-contenedor {
+        padding: 16px;
+    }
+}

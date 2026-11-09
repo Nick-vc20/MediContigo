@@ -1,0 +1,108 @@
+
+/* HU-07: Panel de filtros avanzados */
+
+.filtros-centros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 20px;
+    margin: 16px 0;
+    background: #f8fafc;
+    border: 1px solid #dbe4e8;
+    border-radius: 12px;
+}
+
+.filtros-centros label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex: 1 1 170px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.filtros-centros select,
+.filtros-centros input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: white;
+    color: #334155;
+    font-size: 14px;
+}
+
+.filtros-centros select:focus,
+.filtros-centros input:focus {
+    outline: 2px solid #14b8a6;
+    outline-offset: 1px;
+}
+
+.filtros-centros .filtros-hoy {
+    flex-direction: row;
+    align-items: center;
+    flex: 0 1 145px;
+    cursor: pointer;
+}
+
+.filtros-hoy input {
+    width: 17px;
+    height: 17px;
+    accent-color: #0d9488;
+}
+
+.filtros-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filtros-acciones button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.filtros-acciones button[type="submit"] {
+    background: #0d9488;
+    border: 1px solid #0d9488;
+    color: white;
+}
+
+.filtros-acciones button[type="submit"]:hover {
+    background: #0f766e;
+}
+
+.filtros-acciones button[type="button"] {
+    background: white;
+    color: #0f766e;
+    border: 1px solid #0d9488;
+}
+
+.filtros-acciones button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .filtros-centros {
+        padding: 14px;
+    }
+
+    .filtros-centros label {
+        flex-basis: 100%;
+    }
+
+    .filtros-acciones {
+        width: 100%;
+    }
+
+    .filtros-acciones button {
+        flex: 1;
+    }
+}

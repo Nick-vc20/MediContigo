@@ -3,12 +3,26 @@ import { MapContainer, TileLayer, Marker, Tooltip, CircleMarker, useMap } from "
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { buscarCentrosCercanos } from "../api/centrosApi";
+
+
+import { buscarCentrosFiltrados, obtenerOpcionesFiltros } from "../api/centrosApi";
+
+
 import { TIPOS_LEYENDA, estiloTipo, formatoCosto, ocupacionDe } from "../utils/formato";
 import PerfilCentro from "./PerfilCentro";
 import "../mapa.css";
+import "../filtros.css";
 
 const ORIGEN_POR_DEFECTO = [-12.046374, -77.042793];
+
+
+const FILTROS_VACIOS = {
+    especialidad: "",
+    tipo: "",
+    maxCosto: "",
+    hoy: false
+};
+
 
 const iconos = {};
 
@@ -63,6 +77,19 @@ function MapaCentros() {
     const [etiquetaOrigen, setEtiquetaOrigen] = useState("");
     const [mensajeGPS, setMensajeGPS] = useState("");
     const [radio, setRadio] = useState(5);
+    const [borrador, setBorrador] = useState({
+     ...FILTROS_VACIOS
+    });
+
+    const [filtros, setFiltros] = useState({
+      ...FILTROS_VACIOS
+    });
+
+    const [opciones, setOpciones] = useState({
+     especialidades: [],
+     tipos: []
+    });
+
     const [centros, setCentros] = useState([]);
     const [cargando, setCargando] = useState(false);
     const [error, setError] = useState("");
@@ -93,31 +120,91 @@ function MapaCentros() {
         );
     }, []);
 
-    useEffect(() => {
-        if (!origen) {
-            return;
-        }
+    
+useEffect(() => {
+    if (!origen) {
+        return;
+    }
 
-        let vigente = true;
-        setCargando(true);
-        setError("");
+    let vigente = true;
 
-        buscarCentrosCercanos(origen[0], origen[1], radio)
-            .then(datos => {
-                if (vigente) setCentros(datos);
-            })
-            .catch(() => {
-                if (vigente) {
-                    setCentros([]);
-                    setError("No se pudieron cargar los centros medicos");
-                }
-            })
-            .finally(() => {
-                if (vigente) setCargando(false);
-            });
+    setCargando(true);
+    setError("");
 
-        return () => { vigente = false; };
-    }, [origen, radio]);
+    buscarCentrosFiltrados(
+        origen[0],
+        origen[1],
+        radio,
+        filtros
+    )
+        .then(datos => {
+            if (vigente) {
+                setCentros(datos);
+            }
+        })
+        .catch(error => {
+            if (vigente) {
+                setCentros([]);
+                setError(
+                    error.message ||
+                    "No se pudieron cargar los centros médicos"
+                );
+            }
+        })
+        .finally(() => {
+            if (vigente) {
+                setCargando(false);
+            }
+        });
+
+    return () => {
+        vigente = false;
+    };
+
+}, [origen, radio, filtros]);
+
+
+
+useEffect(() => {
+    if (!origen) return;
+
+    let vigente = true;
+
+    obtenerOpcionesFiltros(origen[0], origen[1], radio)
+        .then(datos => {
+            if (vigente) {
+                setOpciones({
+                    especialidades: datos.especialidades || [],
+                    tipos: datos.tipos || []
+                });
+            }
+        })
+        .catch(() => {
+            if (vigente) {
+                setOpciones({
+                    especialidades: [],
+                    tipos: []
+                });
+            }
+        });
+
+    return () => {
+        vigente = false;
+    };
+}, [origen, radio]);
+
+function aplicarFiltros(e) {
+    e.preventDefault();
+    setSeleccionadoId(null);
+    setFiltros({ ...borrador });
+}
+
+function limpiarFiltros() {
+    setBorrador({ ...FILTROS_VACIOS });
+    setFiltros({ ...FILTROS_VACIOS });
+    setSeleccionadoId(null);
+}
+
 
     async function buscarDireccion(e) {
         e.preventDefault();
@@ -219,6 +306,89 @@ function MapaCentros() {
                     </form>
                 </div>
             </div>
+
+            
+<form
+    className="filtros-centros"
+    onSubmit={aplicarFiltros}
+>
+    <label>
+        Especialidad
+        <select
+            value={borrador.especialidad}
+            onChange={e => setBorrador({
+                ...borrador,
+                especialidad: e.target.value
+            })}
+        >
+            <option value="">Todas las especialidades</option>
+            {opciones.especialidades.map(nombre => (
+                <option key={nombre} value={nombre}>
+                    {nombre}
+                </option>
+            ))}
+        </select>
+    </label>
+
+    <label>
+        Tipo de centro
+        <select
+            value={borrador.tipo}
+            onChange={e => setBorrador({
+                ...borrador,
+                tipo: e.target.value
+            })}
+        >
+            <option value="">Todos los tipos</option>
+            {opciones.tipos.map(nombre => (
+                <option key={nombre} value={nombre}>
+                    {nombre}
+                </option>
+            ))}
+        </select>
+    </label>
+
+    <label>
+        Costo máximo (S/)
+        <input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Sin límite"
+            value={borrador.maxCosto}
+            onChange={e => setBorrador({
+                ...borrador,
+                maxCosto: e.target.value
+            })}
+        />
+    </label>
+
+    <label className="filtros-hoy">
+        <input
+            type="checkbox"
+            checked={borrador.hoy}
+            onChange={e => setBorrador({
+                ...borrador,
+                hoy: e.target.checked
+            })}
+        />
+        Atiende hoy
+    </label>
+
+    <div className="filtros-acciones">
+        <button type="submit" disabled={cargando}>
+            Aplicar filtros
+        </button>
+
+        <button
+            type="button"
+            onClick={limpiarFiltros}
+        >
+            Limpiar
+        </button>
+    </div>
+</form>
+
 
             {mensajeGPS && <p className="mapa-aviso">{mensajeGPS}</p>}
             {error && <p className="error" role="alert">{error}</p>}
