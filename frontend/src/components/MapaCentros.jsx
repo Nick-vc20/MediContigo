@@ -4,7 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import { buscarCentrosCercanos } from "../api/centrosApi";
-import { estiloTipo, formatoCosto, ocupacionDe } from "../utils/formato";
+import { TIPOS_LEYENDA, estiloTipo, formatoCosto, ocupacionDe } from "../utils/formato";
 import PerfilCentro from "./PerfilCentro";
 import "../mapa.css";
 
@@ -186,11 +186,20 @@ function MapaCentros() {
                 <div>
                     <h2>Centros médicos cercanos</h2>
                     {origen && <p className="mapa-origen">Buscando cerca de: <b>{etiquetaOrigen}</b></p>}
+
+                    <ul className="mapa-leyenda" aria-label="Tipos de establecimiento">
+                        {TIPOS_LEYENDA.map(tipo => (
+                            <li key={tipo.etiqueta}>
+                                <span className="leyenda-punto" style={{ background: tipo.color }}>{tipo.letra}</span>
+                                {tipo.etiqueta}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
                 <div className="mapa-controles">
                     <div className="mapa-radio" role="group" aria-label="Radio de búsqueda">
-                        {[5, 10].map(km => (
+                        {[5, 10, 15, 20].map(km => (
                             <button
                                 key={km}
                                 type="button"
@@ -239,7 +248,7 @@ function MapaCentros() {
 
                             {!cargando && !error && centros.length === 0 && (
                                 <p className="perfil-vacio">
-                                    No se encontraron centros en tu área. Prueba ampliando el radio a 10 km.
+                                    No se encontraron centros en tu área. Prueba ampliando el radio de búsqueda.
                                 </p>
                             )}
 

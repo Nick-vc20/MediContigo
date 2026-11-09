@@ -73,8 +73,15 @@ export function estiloTipo(tipo) {
   if (nombre.includes('hospital')) return { color: '#dc2626', letra: 'H' };
   if (nombre.includes('clínica') || nombre.includes('clinica')) return { color: '#2563eb', letra: 'C' };
   if (nombre.includes('posta')) return { color: '#16a34a', letra: 'P' };
+  if (nombre.includes('centro')) return { color: '#7c3aed', letra: 'M' };
   return { color: '#6b7280', letra: '+' };
 }
+
+// Leyenda del mapa: un ejemplo de cada tipo de establecimiento
+export const TIPOS_LEYENDA = ['Hospital', 'Clínica', 'Posta', 'Centro Médico'].map((etiqueta) => ({
+  etiqueta,
+  ...estiloTipo(etiqueta),
+}));
 
 export const urlComoLlegar = (lat, lng) =>
   `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;

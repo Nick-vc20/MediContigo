@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../login.css";
 function Login({ alIniciarSesion }) {
   const [correo, setCorreo] = useState("");
@@ -39,8 +40,19 @@ function Login({ alIniciarSesion }) {
   return (
     <div className="login-pagina">
       <div className="login-lado">
+        <div className="login-marca">
+          <span className="login-logo" aria-hidden="true"></span>
+          <span className="login-marca-nombre">MediContigo</span>
+        </div>
+
         <h1>Panel de administración</h1>
         <p>Entra con tu cuenta para gestionar el sistema.</p>
+
+        <ul className="login-beneficios">
+          <li>Actualiza la ocupación de tu centro al instante</li>
+          <li>Gestiona especialidades, horarios y médicos</li>
+          <li>Mantén información confiable para los pacientes</li>
+        </ul>
       </div>
 
       <div className="login-formulario">
@@ -50,10 +62,12 @@ function Login({ alIniciarSesion }) {
 
           <form onSubmit={enviar}>
             <div className="campo">
-              <label>Correo</label>
+              <label htmlFor="login-correo">Correo</label>
               <input
+                id="login-correo"
                 type="email"
                 placeholder="admin@correo.com"
+                autoComplete="username"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
                 required
@@ -61,29 +75,49 @@ function Login({ alIniciarSesion }) {
             </div>
 
             <div className="campo">
-              <label>Contraseña</label>
-              <input
-                type={verPassword ? "text" : "password"}
-                placeholder="Tu contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="ver-password"
-                onClick={() => setVerPassword(!verPassword)}
-              >
-                {verPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-              </button>
+              <label htmlFor="login-password">Contraseña</label>
+              <div className="campo-password">
+                <input
+                  id="login-password"
+                  type={verPassword ? "text" : "password"}
+                  placeholder="Tu contraseña"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="ver-password"
+                  aria-pressed={verPassword}
+                  onClick={() => setVerPassword(!verPassword)}
+                >
+                  {verPassword ? "Ocultar" : "Mostrar"}
+                </button>
+              </div>
             </div>
 
             <button type="submit" className="boton" disabled={cargando}>
-              {cargando ? "Entrando..." : "Entrar"}
+              {cargando ? (
+                <>
+                  <span className="boton-spinner" aria-hidden="true"></span>
+                  Entrando...
+                </>
+              ) : (
+                "Entrar"
+              )}
             </button>
           </form>
 
-          {error && <p className="mensaje-error">{error}</p>}
+          {error && (
+            <p className="mensaje-error" role="alert">
+              {error}
+            </p>
+          )}
+
+          <Link to="/" className="login-volver">
+            ← Volver al mapa de centros
+          </Link>
         </div>
       </div>
     </div>

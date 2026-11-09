@@ -16,6 +16,11 @@
 .mapa-barra h2 { margin: 0; }
 .mapa-origen { margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--suave); }
 
+/* Leyenda de tipos */
+.mapa-leyenda { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; margin: 0.5rem 0 0; padding: 0; list-style: none; font-size: 0.82rem; color: var(--suave); }
+.mapa-leyenda li { display: inline-flex; align-items: center; gap: 0.35rem; }
+.leyenda-punto { display: inline-grid; place-items: center; width: 1.2rem; height: 1.2rem; font-size: 0.7rem; font-weight: 700; color: #fff; border-radius: 50%; }
+
 .mapa-controles { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
 
 .mapa-radio { display: inline-flex; border: 1px solid var(--borde); border-radius: 8px; overflow: hidden; background: #fff; }
@@ -85,7 +90,8 @@
   border: 1px solid var(--borde);
   border-radius: 10px;
 }
-.centro-item:hover { background: #f4fafb; border-color: var(--verde); }
+.centro-item { cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.15s; }
+.centro-item:hover { background: #f4fafb; border-color: var(--verde); transform: translateX(2px); }
 
 .centro-item-icono {
   flex: none;
