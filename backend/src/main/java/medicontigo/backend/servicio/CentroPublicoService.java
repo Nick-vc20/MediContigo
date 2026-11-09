@@ -52,8 +52,6 @@ public class CentroPublicoService {
                 .findByCentroIdAndActivoTrue(centroId).stream()
                 .collect(Collectors.groupingBy(m -> m.getEspecialidad().getId(),
                         Collectors.mapping(this::aMedico, Collectors.toList())));
-
-        // Solo se muestran las especialidades activas
         List<EspecialidadPerfil> listaEspecialidades = especialidades
                 .findByCentroIdAndEstadoTrueOrderByNombreAsc(centroId).stream()
                 .map(e -> new EspecialidadPerfil(e.getId(), e.getNombre(), e.getDescripcion(),
@@ -64,7 +62,7 @@ public class CentroPublicoService {
         return new PerfilCentroResponse(centro.getId(), centro.getNombre(), centro.getTipo(),
                 centro.getDireccion(), centro.getTelefono(), centro.getLatitud(), centro.getLongitud(),
                 centro.getCostoConsulta(), centro.getTiempoEspera(), centro.getNivelOcupacion(),
-                listaEspecialidades);
+                java.util.List.copyOf(listaEspecialidades));
     }
 
     private HorarioPerfil aHorario(HorarioEspecialidad h) {

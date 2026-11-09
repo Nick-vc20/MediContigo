@@ -3,12 +3,12 @@ package medicontigo.backend.dto;
 import java.util.List;
 
 public class PerfilCentroDTO {
-    private String nombreCentro;      // En lugar de 'nombre'
-    private String direccionCentro;   // En lugar de 'direccion'
+    private String nombreCentro;      
+    private String direccionCentro;   
     private double costoConsulta;
     private String tiempoEspera;
     private List<String> especialidades;
-    private List<String> resumenHorarios; // En lugar de 'horarios'
+    private List<String> resumenHorarios; 
 
     public PerfilCentroDTO(String nombreCentro, String direccionCentro, double costoConsulta, 
                            String tiempoEspera, List<String> especialidades, List<String> resumenHorarios) {

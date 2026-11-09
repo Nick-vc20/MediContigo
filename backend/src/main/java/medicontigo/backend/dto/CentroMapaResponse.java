@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 import medicontigo.backend.modelo.CentroMedico;
 
-// Datos livianos que necesita el mapa y la lista lateral.
-// Se evita devolver la entidad completa para no arrastrar relaciones JPA.
 public record CentroMapaResponse(
         int id,
         String nombre,

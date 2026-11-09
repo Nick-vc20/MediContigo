@@ -18,12 +18,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// HU-06 (6.4): pruebas del perfil publico consolidado y de la busqueda de centros en el mapa
 @SpringBootTest
 @Transactional
 class PerfilCentroPublicoTest {
 
-    private static final int CENTRO = 1; // Hospital Lima, creado en data.sql
+    private static final int CENTRO = 1;
 
     // Hospital Lima en data.sql
     private static final double LAT_LIMA = -12.046374;
@@ -48,7 +47,6 @@ class PerfilCentroPublicoTest {
         assertNotNull(perfil.nivelOcupacion());
         assertFalse(perfil.especialidades().isEmpty());
 
-        // cada especialidad del seed trae sus horarios y su personal
         perfil.especialidades().forEach(e -> {
             assertFalse(e.horarios().isEmpty(), "Sin horarios: " + e.nombre());
             assertFalse(e.medicos().isEmpty(), "Sin personal: " + e.nombre());

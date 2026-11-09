@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import medicontigo.backend.dto.PerfilCentroResponse;
 import medicontigo.backend.servicio.CentroPublicoService;
 
-// HU-06: consulta publica (sin login) del perfil completo de un centro.
-// El CORS se configura en CorsConfig para todos los /api/**.
 @RestController
 @RequestMapping("/api/publico/centros")
 public class CentroPublicoController {

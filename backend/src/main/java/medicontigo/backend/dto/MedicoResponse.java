@@ -1,9 +1,9 @@
 package medicontigo.backend.dto;
 
-import medicontigo.backend.modelo.Medico;
 import java.time.LocalDate;
 
-// Respuesta plana para evitar devolver relaciones JPA completas.
+import medicontigo.backend.modelo.Medico;
+
 public record MedicoResponse(Integer id, String nombreCompleto, String cmp,
                              Integer especialidadId, String especialidad,
                              Integer centroId, boolean activo, LocalDate fechaIngreso) {

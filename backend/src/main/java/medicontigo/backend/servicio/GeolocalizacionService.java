@@ -1,13 +1,14 @@
 package medicontigo.backend.servicio;
 
-import medicontigo.backend.dto.CentroMapaResponse;
-import medicontigo.backend.modelo.CentroMedico;
-import medicontigo.backend.repositorio.CentroMedicoRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import medicontigo.backend.dto.CentroMapaResponse;
+import medicontigo.backend.modelo.CentroMedico;
+import medicontigo.backend.repositorio.CentroMedicoRepository;
 
 @Service
 public class GeolocalizacionService {
@@ -17,8 +18,6 @@ public class GeolocalizacionService {
     public GeolocalizacionService(CentroMedicoRepository centroMedicoRepository) {
         this.centroMedicoRepository = centroMedicoRepository;
     }
-
-    // Buscar centros medicos dentro de un radio (km), ordenados del mas cercano al mas lejano
     public List<CentroMapaResponse> buscarCercanos(double lat, double lng, double radio) {
 
         if (!Double.isFinite(lat) || !Double.isFinite(lng) || !Double.isFinite(radio)
@@ -38,7 +37,6 @@ public class GeolocalizacionService {
                     centro.getLatitud().doubleValue(), centro.getLongitud().doubleValue());
 
             if (distancia <= radio) {
-                // Se redondea a 2 decimales para mostrarla en pantalla
                 cercanos.add(CentroMapaResponse.desde(centro, Math.round(distancia * 100.0) / 100.0));
             }
         }
@@ -47,7 +45,6 @@ public class GeolocalizacionService {
         return cercanos;
     }
 
-    // Calcular distancia entre dos ubicaciones con Haversine
     private double calcularDistancia(double lat1, double lng1, double lat2, double lng2) {
 
         double radioTierra = 6371;
