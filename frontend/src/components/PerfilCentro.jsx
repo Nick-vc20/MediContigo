@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { obtenerPerfilCentro } from '../api/centrosApi';
+
+import FormularioResena from "./FormularioResena";
+
 import { atiendeHoy, formatoCosto, ocupacionDe, resumirHorarios, urlComoLlegar } from '../utils/formato';
 import '../perfil.css';
 
@@ -148,6 +151,13 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
           </div>
         </details>
       ))}
+
+
+
+  {!compacto && (
+      <FormularioResena centroId={perfil.id ?? id} />
+  )}
+
 
       <p className="perfil-aviso">
         Información referencial. Confirma horarios y disponibilidad con el establecimiento antes de acudir.
