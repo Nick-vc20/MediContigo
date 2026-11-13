@@ -14,6 +14,7 @@ import RutaPaciente from "./components/RutaPaciente";
 import { useSesionPaciente } from "./auth/sesionPaciente";
 
 import "./App.css";
+import "./paciente.css";
 
 export default function App() {
 
@@ -33,19 +34,27 @@ export default function App() {
                     path="/"
                     element={
                         <div>
-                            <div className="mapa-enlace">
+                            <nav className="mapa-enlace" aria-label="Acceso de usuarios">
                                 {sesionPaciente ? (
-                                    <Link to="/paciente/cuenta">
+                                    // HU-18: con sesión de paciente solo se muestra su cuenta
+                                    <Link className="mapa-boton principal" to="/paciente/cuenta">
+                                        <span aria-hidden="true">👤</span>
                                         Mi cuenta ({sesionPaciente.paciente?.nombreCompleto})
                                     </Link>
                                 ) : (
                                     <>
-                                        <Link to="/paciente/login">Ingresar como paciente</Link>
-                                        <Link to="/paciente/registro">Registrarme</Link>
+                                        <Link className="mapa-boton principal" to="/paciente/registro">
+                                            Registrarme
+                                        </Link>
+                                        <Link className="mapa-boton" to="/paciente/login">
+                                            Ingresar como paciente
+                                        </Link>
+                                        <Link className="mapa-boton secundario" to="/admin">
+                                            Ingresar como administrador
+                                        </Link>
                                     </>
                                 )}
-                                <Link to="/admin">Ingresar como administrador</Link>
-                            </div>
+                            </nav>
                             <MapaCentros />
                         </div>
                     }
