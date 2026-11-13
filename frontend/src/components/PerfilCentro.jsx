@@ -1,12 +1,19 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { obtenerPerfilCentro } from '../api/centrosApi';
+import FormularioResena from './FormularioResena';
+import Tarifario from './Tarifario';
 
-import FormularioResena from "./FormularioResena";
+import {
+  atiendeHoy,
+  formatoCosto,
+  ocupacionDe,
+  resumirHorarios,
+  urlComoLlegar
+} from '../utils/formato';
 
-import { atiendeHoy, formatoCosto, ocupacionDe, resumirHorarios, urlComoLlegar } from '../utils/formato';
 import '../perfil.css';
-
 
 export default function PerfilCentro({ id, compacto = false, alVolver }) {
   // resultado = { id, perfil, error } del ultimo pedido terminado
@@ -16,19 +23,34 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
 
   useEffect(() => {
     let vigente = true;
+
     obtenerPerfilCentro(id)
       .then((datos) => {
-        if (vigente) setResultado({ id: String(id), perfil: datos, error: '' });
+        if (vigente) {
+          setResultado({
+            id: String(id),
+            perfil: datos,
+            error: ''
+          });
+        }
       })
       .catch((e) => {
         if (!vigente) return;
+
         const mensaje = e.status === 404
           ? 'No encontramos este centro médico.'
           : 'No se pudo cargar la información del centro.';
-        setResultado({ id: String(id), perfil: null, error: mensaje });
+
+        setResultado({
+          id: String(id),
+          perfil: null,
+          error: mensaje
+        });
       });
 
-    return () => { vigente = false; };
+    return () => {
+      vigente = false;
+    };
   }, [id, intento]);
 
   const cargando = resultado === null || resultado.id !== String(id);
@@ -41,18 +63,28 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
   };
 
   useEffect(() => {
-    if (perfil && compacto) contenedor.current?.focus();
+    if (perfil && compacto) {
+      contenedor.current?.focus();
+    }
   }, [perfil, compacto]);
 
   const botonVolver = alVolver && (
-    <button type="button" className="perfil-volver" onClick={alVolver}>← Volver a la lista</button>
+    <button
+      type="button"
+      className="perfil-volver"
+      onClick={alVolver}
+    >
+      ← Volver a la lista
+    </button>
   );
 
   if (cargando) {
     return (
       <div className="perfil" aria-busy="true">
         {botonVolver}
-        <div className="perfil-esqueleto" role="status">Cargando información del centro...</div>
+        <div className="perfil-esqueleto" role="status">
+          Cargando información del centro...
+        </div>
       </div>
     );
   }
@@ -61,8 +93,18 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
     return (
       <div className="perfil">
         {botonVolver}
-        <p className="error" role="alert">{error}</p>
-        <button type="button" className="perfil-reintentar" onClick={reintentar}>Reintentar</button>
+
+        <p className="error" role="alert">
+          {error}
+        </p>
+
+        <button
+          type="button"
+          className="perfil-reintentar"
+          onClick={reintentar}
+        >
+          Reintentar
+        </button>
       </div>
     );
   }
@@ -70,23 +112,53 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
   const ocupacion = ocupacionDe(perfil.nivelOcupacion);
 
   return (
-    <article className={`perfil ${compacto ? 'perfil-compacto' : ''}`} ref={contenedor} tabIndex={-1}>
+    <article
+      className={`perfil ${compacto ? 'perfil-compacto' : ''}`}
+      ref={contenedor}
+      tabIndex={-1}
+    >
       {botonVolver}
 
       <header className="perfil-cabecera">
-        <span className="perfil-tipo">{perfil.tipo}</span>
-        <h2 className="perfil-nombre">{perfil.nombre}</h2>
-        <p className="perfil-direccion">{perfil.direccion}</p>
+        <span className="perfil-tipo">
+          {perfil.tipo}
+        </span>
+
+        <h2 className="perfil-nombre">
+          {perfil.nombre}
+        </h2>
+
+        <p className="perfil-direccion">
+          {perfil.direccion}
+        </p>
       </header>
 
       <div className="perfil-acciones">
-        <a className="perfil-boton principal" href={urlComoLlegar(perfil.latitud, perfil.longitud)}
-           target="_blank" rel="noreferrer">Cómo llegar</a>
+        <a
+          className="perfil-boton principal"
+          href={urlComoLlegar(perfil.latitud, perfil.longitud)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Cómo llegar
+        </a>
+
         {perfil.telefono && (
-          <a className="perfil-boton" href={`tel:${perfil.telefono.replace(/[^\d+]/g, '')}`}>Llamar</a>
+          <a
+            className="perfil-boton"
+            href={`tel:${perfil.telefono.replace(/[^\d+]/g, '')}`}
+          >
+            Llamar
+          </a>
         )}
+
         {compacto && (
-          <Link className="perfil-boton" to={`/centro/${perfil.id}`}>Página completa</Link>
+          <Link
+            className="perfil-boton"
+            to={`/centro/${perfil.id}`}
+          >
+            Página completa
+          </Link>
         )}
       </div>
 
@@ -95,42 +167,79 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
           <span>Costo de consulta</span>
           <strong>{formatoCosto(perfil.costoConsulta)}</strong>
         </div>
+
         <div className="perfil-dato">
           <span>Tiempo de espera</span>
-          <strong>{perfil.tiempoEspera || 'No especificado'}</strong>
+          <strong>
+            {perfil.tiempoEspera || 'No especificado'}
+          </strong>
         </div>
+
         <div className="perfil-dato">
           <span>Ocupación actual</span>
-          <strong className={`ocupacion ocupacion-${ocupacion.clase}`}>{ocupacion.etiqueta}</strong>
+          <strong className={`ocupacion ocupacion-${ocupacion.clase}`}>
+            {ocupacion.etiqueta}
+          </strong>
         </div>
+
         <div className="perfil-dato">
           <span>Teléfono</span>
-          <strong>{perfil.telefono || 'No especificado'}</strong>
+          <strong>
+            {perfil.telefono || 'No especificado'}
+          </strong>
         </div>
       </div>
 
-      <h3 className="perfil-titulo">Especialidades, horarios y personal</h3>
+      {/* HU-08: Tarifario de costos por especialidad */}
+      <Tarifario centroId={perfil.id ?? id} />
+
+      <h3 className="perfil-titulo">
+        Especialidades, horarios y personal
+      </h3>
 
       {perfil.especialidades.length === 0 && (
-        <p className="perfil-vacio">Este centro todavía no tiene especialidades registradas.</p>
+        <p className="perfil-vacio">
+          Este centro todavía no tiene especialidades registradas.
+        </p>
       )}
 
       {perfil.especialidades.map((esp) => (
-        <details className="perfil-especialidad" key={esp.id} open={!compacto}>
+        <details
+          className="perfil-especialidad"
+          key={esp.id}
+          open={!compacto}
+        >
           <summary>
-            <span className="perfil-especialidad-nombre">{esp.nombre}</span>
-            {atiendeHoy(esp.horarios) && <span className="perfil-hoy">Atiende hoy</span>}
+            <span className="perfil-especialidad-nombre">
+              {esp.nombre}
+            </span>
+
+            {atiendeHoy(esp.horarios) && (
+              <span className="perfil-hoy">
+                Atiende hoy
+              </span>
+            )}
           </summary>
 
           <div className="perfil-especialidad-cuerpo">
-            {esp.descripcion && <p className="perfil-descripcion">{esp.descripcion}</p>}
+            {esp.descripcion && (
+              <p className="perfil-descripcion">
+                {esp.descripcion}
+              </p>
+            )}
 
             <h4>Horarios de atención</h4>
+
             {esp.horarios.length === 0 ? (
-              <p className="perfil-vacio">Horarios no registrados.</p>
+              <p className="perfil-vacio">
+                Horarios no registrados.
+              </p>
             ) : (
               resumirHorarios(esp.horarios).map((h) => (
-                <div className={`perfil-horario ${h.incluyeHoy ? 'es-hoy' : ''}`} key={h.dias + h.horas}>
+                <div
+                  className={`perfil-horario ${h.incluyeHoy ? 'es-hoy' : ''}`}
+                  key={h.dias + h.horas}
+                >
                   <span>{h.dias}</span>
                   <strong>{h.horas}</strong>
                 </div>
@@ -138,8 +247,11 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
             )}
 
             <h4>Personal médico</h4>
+
             {esp.medicos.length === 0 ? (
-              <p className="perfil-vacio">Personal no registrado.</p>
+              <p className="perfil-vacio">
+                Personal no registrado.
+              </p>
             ) : (
               esp.medicos.map((m) => (
                 <div className="perfil-medico" key={m.cmp}>
@@ -152,15 +264,13 @@ export default function PerfilCentro({ id, compacto = false, alVolver }) {
         </details>
       ))}
 
-
-
-  {!compacto && (
-      <FormularioResena centroId={perfil.id ?? id} />
-  )}
-
+      {!compacto && (
+        <FormularioResena centroId={perfil.id ?? id} />
+      )}
 
       <p className="perfil-aviso">
-        Información referencial. Confirma horarios y disponibilidad con el establecimiento antes de acudir.
+        Información referencial. Confirma horarios y disponibilidad
+        con el establecimiento antes de acudir.
       </p>
     </article>
   );
