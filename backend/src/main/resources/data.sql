@@ -7069,3 +7069,15 @@ SELECT v.nom, v.cmp, e.id, c.id, TRUE, CAST(v.fecha AS DATE) FROM (VALUES
 ) AS v(nom, cmp, centro, esp, fecha)
 JOIN centros_medicos c ON c.nombre = v.centro
 JOIN especialidad e ON e.centro_id = c.id AND e.nombre = v.esp;
+
+-- HU-14: reseñas de ejemplo para el panel de auditoría y moderación
+INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado, fecha_creacion, moderado_por, fecha_moderacion)
+VALUES (1, 'Lucía Fernández', 5, 'Me atendieron rápido y el personal fue muy amable en todo momento.', 'PUBLICADA', TIMESTAMP '2026-10-02 10:15:00', 'admin@medicontigo.com', TIMESTAMP '2026-10-02 12:00:00');
+INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado, fecha_creacion, moderado_por, fecha_moderacion)
+VALUES (2, 'Jorge Ramírez', 4, 'Buena atención en pediatría, aunque la espera fue algo larga.', 'PUBLICADA', TIMESTAMP '2026-10-05 16:40:00', 'admin@medicontigo.com', TIMESTAMP '2026-10-05 18:00:00');
+INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado, fecha_creacion)
+VALUES (1, 'Carmen Soto', 3, 'La atención fue correcta, pero faltaba información sobre los horarios.', 'PENDIENTE', TIMESTAMP '2026-11-10 09:20:00');
+INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado, fecha_creacion, alertas_contenido)
+VALUES (1, 'Raúl Paredes', 1, 'Pésimo servicio, son unos inútiles. Llámame al 987654321 y te cuento.', 'PENDIENTE', TIMESTAMP '2026-11-11 19:05:00', 'LENGUAJE_OFENSIVO,DATOS_PERSONALES');
+INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado, fecha_creacion, alertas_contenido)
+VALUES (3, 'Ana Torres', 5, 'Excelente clínica!!!!!! visiten www.descuentos-salud.com para promociones', 'PENDIENTE', TIMESTAMP '2026-11-12 08:30:00', 'ENLACE_EXTERNO,SPAM');

@@ -2,8 +2,10 @@
 package medicontigo.backend.servicio;
 
 import medicontigo.backend.modelo.CentroMedico;
+import medicontigo.backend.modelo.Paciente;
 import medicontigo.backend.modelo.Resena;
 import medicontigo.backend.repositorio.CentroMedicoRepository;
+import medicontigo.backend.repositorio.PacienteRepository;
 import medicontigo.backend.repositorio.ResenaRepository;
 
 import org.springframework.http.HttpStatus;
@@ -18,22 +20,38 @@ public class ResenaService {
 
     private final ResenaRepository resenaRepository;
     private final CentroMedicoRepository centroRepository;
+    private final PacienteRepository pacienteRepository;
+    private final FiltroContenidoService filtroContenido;
 
     public ResenaService(
             ResenaRepository resenaRepository,
-            CentroMedicoRepository centroRepository) {
+            CentroMedicoRepository centroRepository,
+            PacienteRepository pacienteRepository,
+            FiltroContenidoService filtroContenido) {
 
         this.resenaRepository = resenaRepository;
         this.centroRepository = centroRepository;
+        this.pacienteRepository = pacienteRepository;
+        this.filtroContenido = filtroContenido;
     }
 
-    // Registrar una nueva reseña
+    // Registrar una nueva reseña (HU-18: solo pacientes autenticados)
     @Transactional
     public Resena registrarResena(
             Integer centroId,
-            String nombrePaciente,
+            Long pacienteId,
             Integer puntuacion,
             String comentario) {
+
+        Paciente paciente = pacienteId == null ? null
+            : pacienteRepository.findById(pacienteId).orElse(null);
+        if (paciente == null) {
+            throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,
+                "Debes iniciar sesión para publicar una reseña"
+            );
+        }
+        String nombrePaciente = paciente.getNombreCompleto();
 
         // Validar el centro
         if (centroId == null || centroId <= 0) {
@@ -80,9 +98,13 @@ public class ResenaService {
         Resena resena = new Resena();
 
         resena.setCentro(centro);
+        resena.setPaciente(paciente);
         resena.setNombrePaciente(nombrePaciente.trim());
         resena.setPuntuacion(puntuacion);
         resena.setComentario(comentario.trim());
+
+        // HU-14: el filtro de contenido marca alertas para el moderador
+        resena.setAlertas(filtroContenido.analizar(comentario));
 
         // Guardar en la base de datos
         return resenaRepository.save(resena);
@@ -104,7 +126,13 @@ public class ResenaService {
         return resenaRepository
                 .findByCentro_IdAndEstadoOrderByFechaCreacionDesc(
                     centroId,
-                    "PUBLICADA"
+                    Resena.PUBLICADA
                 );
+    }
+
+    // HU-18: reseñas publicadas por el paciente autenticado (cualquier estado)
+    @Transactional(readOnly = true)
+    public List<Resena> obtenerResenasDelPaciente(Long pacienteId) {
+        return resenaRepository.buscarDelPaciente(pacienteId);
     }
 }
