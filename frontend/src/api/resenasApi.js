@@ -1,36 +1,16 @@
+import { pedirComoPaciente } from "./pacientesApi";
 
 const API = import.meta.env.VITE_API_URL ?? "http://localhost:8081";
 
-// Registrar una reseña nueva
-export async function registrarResena(centroId, datos) {
-    const respuesta = await fetch(
-        `${API}/api/publico/centros/${centroId}/resenas`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(datos)
-        }
-    );
-
-    if (!respuesta.ok) {
-        let mensaje = "No se pudo registrar la reseña";
-
-        try {
-            const error = await respuesta.json();
-            mensaje = error.message || error.detail || mensaje;
-        } catch {
-            // Se conserva el mensaje predeterminado
-        }
-
-        throw new Error(mensaje);
-    }
-
-    return respuesta.json();
+// HU-13 + HU-18: registrar una reseña (solo pacientes con sesión iniciada)
+export function registrarResena(centroId, datos) {
+    return pedirComoPaciente(`/api/paciente/centros/${centroId}/resenas`, {
+        method: "POST",
+        body: JSON.stringify(datos),
+    });
 }
 
-// Consultar reseñas publicadas
+// Consultar reseñas publicadas (público)
 export async function obtenerResenas(centroId) {
     const respuesta = await fetch(
         `${API}/api/publico/centros/${centroId}/resenas`

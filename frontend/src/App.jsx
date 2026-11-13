@@ -7,6 +7,11 @@ import Administrador from "./components/Administrador";
 import Especialidades from "./components/Especialidades";
 import MapaCentros from "./components/MapaCentros";
 import PerfilCentroPublico from "./components/PerfilCentroPublico";
+import RegistroPaciente from "./components/RegistroPaciente";
+import LoginPaciente from "./components/LoginPaciente";
+import MiCuenta from "./components/MiCuenta";
+import RutaPaciente from "./components/RutaPaciente";
+import { useSesionPaciente } from "./auth/sesionPaciente";
 
 import "./App.css";
 
@@ -15,6 +20,9 @@ export default function App() {
     const [logueado, setLogueado] = useState(
         localStorage.getItem("token") !== null
     );
+
+    // HU-18: sesión del paciente (independiente de la del administrador)
+    const sesionPaciente = useSesionPaciente();
 
     return (
         <BrowserRouter>
@@ -26,6 +34,16 @@ export default function App() {
                     element={
                         <div>
                             <div className="mapa-enlace">
+                                {sesionPaciente ? (
+                                    <Link to="/paciente/cuenta">
+                                        Mi cuenta ({sesionPaciente.paciente?.nombreCompleto})
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link to="/paciente/login">Ingresar como paciente</Link>
+                                        <Link to="/paciente/registro">Registrarme</Link>
+                                    </>
+                                )}
                                 <Link to="/admin">Ingresar como administrador</Link>
                             </div>
                             <MapaCentros />
@@ -37,6 +55,22 @@ export default function App() {
                 <Route
                     path="/centro/:id"
                     element={<PerfilCentroPublico />}
+                />
+
+                {/* HU-17: Registro de paciente */}
+                <Route path="/paciente/registro" element={<RegistroPaciente />} />
+
+                {/* HU-18: Inicio de sesión del paciente */}
+                <Route path="/paciente/login" element={<LoginPaciente />} />
+
+                {/* HU-18: Rutas privadas del paciente (historial y reseñas) */}
+                <Route
+                    path="/paciente/cuenta"
+                    element={
+                        <RutaPaciente>
+                            <MiCuenta />
+                        </RutaPaciente>
+                    }
                 />
 
                 {/* Panel de administradores */}

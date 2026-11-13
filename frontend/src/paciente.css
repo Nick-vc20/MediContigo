@@ -1,0 +1,181 @@
+/* HU-17 / HU-18: registro, inicio de sesión y cuenta del paciente */
+
+.campo-error {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #c0392b;
+}
+
+.campo-ayuda {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #6b708f;
+}
+
+.campo input[aria-invalid="true"] {
+  border-color: #c0392b;
+}
+
+.campo-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.campo-check input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: #232b5d;
+}
+
+.campo-check label {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #4a4f6e;
+  cursor: pointer;
+}
+
+.mensaje-exito,
+.mensaje-aviso {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin: 0 0 18px;
+}
+
+.mensaje-exito {
+  background: #e8f6ee;
+  color: #1e7a46;
+}
+
+.mensaje-aviso {
+  background: #fff6dc;
+  color: #7a5a00;
+}
+
+.login-alterno {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #6b708f;
+  text-align: center;
+}
+
+.login-alterno a {
+  color: #232b5d;
+  font-weight: 500;
+}
+
+/* Mi cuenta */
+.cuenta-correo {
+  color: #6b708f;
+  margin-top: -6px;
+}
+
+.cuenta-seccion {
+  margin-top: 20px;
+}
+
+.cuenta-vacio {
+  color: #6b708f;
+}
+
+.cuenta-resenas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cuenta-resenas li {
+  display: block;
+  padding: 14px 0;
+  border-top: 1px solid #eceef7;
+}
+
+.cuenta-resenas li:first-child {
+  border-top: none;
+}
+
+.cuenta-resenas p {
+  margin: 6px 0;
+  color: #1c2140;
+}
+
+.cuenta-resenas small {
+  color: #8a8fab;
+}
+
+.cuenta-resena-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cuenta-estado {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #eceef7;
+  color: #4a4f6e;
+}
+
+.cuenta-estado.estado-pendiente {
+  background: #fff6dc;
+  color: #7a5a00;
+}
+
+.cuenta-estado.estado-publicada {
+  background: #e8f6ee;
+  color: #1e7a46;
+}
+
+.cuenta-estrellas {
+  color: #f59e0b;
+  letter-spacing: 2px;
+}
+
+.cuenta-estrellas span {
+  color: #d1d5db;
+}
+
+/* Enlaces del paciente en el mapa */
+.mapa-enlace a + a {
+  margin-left: 16px;
+}
+
+/* Reseña sin sesión iniciada */
+.resena-login {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resena-autor {
+  font-size: 14px;
+  color: #334155;
+}
+
+@media (max-width: 760px) {
+  .login-pagina {
+    flex-direction: column;
+  }
+
+  .login-lado {
+    padding: 36px 24px;
+  }
+
+  .login-lado h1 {
+    font-size: 34px;
+  }
+}
+
+.resena-login .resena-enviar {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
