@@ -16,6 +16,11 @@ public class Resena {
     @JoinColumn(name = "centro_id", nullable = false)
     private CentroMedico centro;
 
+    // HU-18: paciente autenticado que publicó la reseña
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
+
     @Column(name = "nombre_paciente", nullable = false, length = 80)
     private String nombrePaciente;
 
@@ -51,6 +56,14 @@ public class Resena {
 
     public void setCentro(CentroMedico centro) {
         this.centro = centro;
+    }
+
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
     public String getNombrePaciente() {

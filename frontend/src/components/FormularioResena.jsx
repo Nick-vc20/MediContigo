@@ -1,10 +1,16 @@
 import "../resenas.css";
+import "../paciente.css";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { registrarResena } from "../api/resenasApi";
+import { useSesionPaciente } from "../auth/sesionPaciente";
 
 export default function FormularioResena({ centroId }) {
 
-    const [nombre, setNombre] = useState("");
+    // HU-18: solo un paciente con sesión iniciada puede publicar reseñas
+    const sesion = useSesionPaciente();
+    const location = useLocation();
+
     const [puntuacion, setPuntuacion] = useState(0);
     const [comentario, setComentario] = useState("");
 
@@ -17,11 +23,6 @@ export default function FormularioResena({ centroId }) {
 
         setError("");
         setExito("");
-
-        if (nombre.trim().length < 2) {
-            setError("Ingresa un nombre válido.");
-            return;
-        }
 
         if (puntuacion < 1 || puntuacion > 5) {
             setError("Selecciona una calificación de 1 a 5 estrellas.");
@@ -37,7 +38,6 @@ export default function FormularioResena({ centroId }) {
 
         try {
             await registrarResena(centroId, {
-                nombrePaciente: nombre.trim(),
                 puntuacion,
                 comentario: comentario.trim()
             });
@@ -47,7 +47,6 @@ export default function FormularioResena({ centroId }) {
                 "Tu opinión está pendiente de revisión."
             );
 
-            setNombre("");
             setPuntuacion(0);
             setComentario("");
 
@@ -58,6 +57,27 @@ export default function FormularioResena({ centroId }) {
         } finally {
             setEnviando(false);
         }
+    }
+
+    if (!sesion) {
+        return (
+            <section className="resena-contenedor">
+                <h3>Deja tu opinión</h3>
+                <p>
+                    {error || "Inicia sesión como paciente para publicar una reseña de este centro médico."}
+                </p>
+                <div className="resena-login">
+                    <Link
+                        className="resena-enviar"
+                        to="/paciente/login"
+                        state={{ desde: location.pathname }}
+                    >
+                        Iniciar sesión
+                    </Link>
+                    <Link to="/paciente/registro">Crear una cuenta</Link>
+                </div>
+            </section>
+        );
     }
 
     return (
@@ -71,20 +91,9 @@ export default function FormularioResena({ centroId }) {
 
             <form onSubmit={enviarResena} className="resena-formulario">
 
-                <label htmlFor="resena-nombre">
-                    Tu nombre
-                </label>
-
-                <input
-                    id="resena-nombre"
-                    type="text"
-                    placeholder="Ingresa tu nombre"
-                    value={nombre}
-                    maxLength={80}
-                    onChange={e => setNombre(e.target.value)}
-                    disabled={enviando}
-                    required
-                />
+                <p className="resena-autor">
+                    Publicarás como <strong>{sesion.paciente?.nombreCompleto}</strong>
+                </p>
 
                 <label>Tu calificación</label>
 
