@@ -10,6 +10,7 @@ const ESTADOS = {
     PENDIENTE: "Pendiente de revisión",
     PUBLICADA: "Publicada",
     RECHAZADA: "No publicada",
+    OCULTA: "Retirada por moderación",
 };
 
 function formatearFecha(valor) {
@@ -111,6 +112,10 @@ export default function MiCuenta() {
                                         <span>{"★".repeat(5 - r.puntuacion)}</span>
                                     </div>
                                     <p>{r.comentario}</p>
+                                    {/* HU-14: motivo del administrador al rechazar u ocultar */}
+                                    {r.motivoModeracion && (r.estado === "RECHAZADA" || r.estado === "OCULTA") && (
+                                        <p className="cuenta-motivo">Motivo: {r.motivoModeracion}</p>
+                                    )}
                                     <small>{formatearFecha(r.fechaCreacion)}</small>
                                 </li>
                             ))}

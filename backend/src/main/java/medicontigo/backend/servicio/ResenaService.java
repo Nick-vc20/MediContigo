@@ -21,15 +21,18 @@ public class ResenaService {
     private final ResenaRepository resenaRepository;
     private final CentroMedicoRepository centroRepository;
     private final PacienteRepository pacienteRepository;
+    private final FiltroContenidoService filtroContenido;
 
     public ResenaService(
             ResenaRepository resenaRepository,
             CentroMedicoRepository centroRepository,
-            PacienteRepository pacienteRepository) {
+            PacienteRepository pacienteRepository,
+            FiltroContenidoService filtroContenido) {
 
         this.resenaRepository = resenaRepository;
         this.centroRepository = centroRepository;
         this.pacienteRepository = pacienteRepository;
+        this.filtroContenido = filtroContenido;
     }
 
     // Registrar una nueva reseña (HU-18: solo pacientes autenticados)
@@ -100,6 +103,9 @@ public class ResenaService {
         resena.setPuntuacion(puntuacion);
         resena.setComentario(comentario.trim());
 
+        // HU-14: el filtro de contenido marca alertas para el moderador
+        resena.setAlertas(filtroContenido.analizar(comentario));
+
         // Guardar en la base de datos
         return resenaRepository.save(resena);
     }
@@ -120,7 +126,7 @@ public class ResenaService {
         return resenaRepository
                 .findByCentro_IdAndEstadoOrderByFechaCreacionDesc(
                     centroId,
-                    "PUBLICADA"
+                    Resena.PUBLICADA
                 );
     }
 

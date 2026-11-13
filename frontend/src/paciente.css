@@ -134,6 +134,22 @@
   color: #1e7a46;
 }
 
+/* HU-14: estados de moderación */
+.cuenta-estado.estado-rechazada {
+  background: #fdecea;
+  color: #b42318;
+}
+
+.cuenta-estado.estado-oculta {
+  background: #eceef2;
+  color: #475569;
+}
+
+.cuenta-motivo {
+  font-size: 13px;
+  color: #b42318;
+}
+
 .cuenta-estrellas {
   color: #f59e0b;
   letter-spacing: 2px;

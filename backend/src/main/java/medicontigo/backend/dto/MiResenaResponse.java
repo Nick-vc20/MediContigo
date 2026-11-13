@@ -11,7 +11,9 @@ public record MiResenaResponse(
     int puntuacion,
     String comentario,
     String estado,
-    LocalDateTime fechaCreacion
+    LocalDateTime fechaCreacion,
+    // HU-14: motivo indicado por el administrador al rechazar u ocultar
+    String motivoModeracion
 ) {
 
     public static MiResenaResponse desde(Resena resena) {
@@ -22,7 +24,8 @@ public record MiResenaResponse(
             resena.getPuntuacion(),
             resena.getComentario(),
             resena.getEstado(),
-            resena.getFechaCreacion()
+            resena.getFechaCreacion(),
+            resena.getMotivoModeracion()
         );
     }
 }
