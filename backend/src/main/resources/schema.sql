@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS especialidad (
 CREATE TABLE IF NOT EXISTS horario_especialidad (
     id INT AUTO_INCREMENT PRIMARY KEY,
     especialidad_id INT NOT NULL,
-    dia_semana INT NOT NULL,        
+    dia_semana INT NOT NULL,
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL,
     CONSTRAINT fk_hor_esp FOREIGN KEY (especialidad_id) REFERENCES especialidad(id),
@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS medicos (
     FOREIGN KEY (especialidad_id) REFERENCES especialidad(id),
     FOREIGN KEY (centro_id) REFERENCES centros_medicos(id)
 );
-
 
 -- HU-13: Reseñas y calificaciones de centros médicos
 
@@ -78,4 +77,20 @@ CREATE TABLE IF NOT EXISTS resenas (
 
     CONSTRAINT chk_resena_puntuacion
         CHECK (puntuacion BETWEEN 1 AND 5)
+);
+
+-- HU-08: Tarifario de costos por especialidad
+
+CREATE TABLE IF NOT EXISTS tarifa (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    especialidad_id INT NOT NULL UNIQUE,
+    precio_aproximado DECIMAL(10,2) NOT NULL,
+    moneda VARCHAR(3) NOT NULL DEFAULT 'PEN',
+
+    CONSTRAINT fk_tarifa_especialidad
+        FOREIGN KEY (especialidad_id)
+        REFERENCES especialidad(id),
+
+    CONSTRAINT chk_tarifa_precio
+        CHECK (precio_aproximado >= 0)
 );
