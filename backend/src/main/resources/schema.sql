@@ -89,6 +89,16 @@ CREATE TABLE IF NOT EXISTS resenas (
 
     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+    -- HU-14: auditoría y moderación
+    -- Alertas del filtro automático de contenido (códigos separados por coma)
+    alertas_contenido VARCHAR(255),
+    motivo_moderacion VARCHAR(255),
+    moderado_por VARCHAR(255),
+    fecha_moderacion TIMESTAMP,
+
+    CONSTRAINT chk_resena_estado
+        CHECK (estado IN ('PENDIENTE', 'PUBLICADA', 'RECHAZADA', 'OCULTA')),
+
     CONSTRAINT fk_resena_centro
         FOREIGN KEY (centro_id)
         REFERENCES centros_medicos(id),

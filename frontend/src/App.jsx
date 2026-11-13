@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import Login from "./components/Login";
 import Administrador from "./components/Administrador";
 import Especialidades from "./components/Especialidades";
+import ModeracionResenas from "./components/ModeracionResenas";
 import MapaCentros from "./components/MapaCentros";
 import PerfilCentroPublico from "./components/PerfilCentroPublico";
 import RegistroPaciente from "./components/RegistroPaciente";
@@ -95,6 +96,13 @@ export default function App() {
                                 />
 
                                 <Especialidades centroId={1} />
+
+                                {/* HU-14: Auditoría y moderación de reseñas */}
+                                <div className="panel-contenido">
+                                    <ModeracionResenas
+                                        alExpirarSesion={() => setLogueado(false)}
+                                    />
+                                </div>
                             </>
                         ) : (
                             <Login
