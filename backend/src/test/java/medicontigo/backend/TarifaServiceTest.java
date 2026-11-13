@@ -228,4 +228,19 @@ class TarifaServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, error.getStatusCode());
         verify(tarifaRepository, never()).saveAndFlush(any(Tarifa.class));
     }
+
+    @Test
+    void debeRechazarSolicitudNula() {
+
+    ResponseStatusException error = assertThrows(
+            ResponseStatusException.class,
+            () -> tarifaService.guardar(1, 1, null)
+    );
+
+    assertEquals(HttpStatus.BAD_REQUEST, error.getStatusCode());
+
+    verify(tarifaRepository, never())
+            .saveAndFlush(any(Tarifa.class));
+    }
+
 }
