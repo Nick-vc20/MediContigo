@@ -111,3 +111,19 @@ CREATE TABLE IF NOT EXISTS resenas (
         CHECK (puntuacion BETWEEN 1 AND 5)
 );
 
+
+-- HU-08: Tarifario de costos por especialidad
+
+CREATE TABLE IF NOT EXISTS tarifa (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    especialidad_id INT NOT NULL UNIQUE,
+    precio_aproximado DECIMAL(10,2) NOT NULL,
+    moneda VARCHAR(3) NOT NULL DEFAULT 'PEN',
+
+    CONSTRAINT fk_tarifa_especialidad
+        FOREIGN KEY (especialidad_id)
+        REFERENCES especialidad(id),
+
+    CONSTRAINT chk_tarifa_precio
+        CHECK (precio_aproximado >= 0)
+);
