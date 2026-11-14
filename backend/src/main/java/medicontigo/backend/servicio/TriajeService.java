@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import medicontigo.backend.dto.TriajeRequest;
+import medicontigo.backend.dto.TriajeResponse;
 
 @Service
 public class TriajeService {
@@ -38,6 +39,17 @@ public class TriajeService {
             "NO",
             "NO_SE"
     );
+
+    private final ReglasTriaje reglasTriaje;
+
+    public TriajeService(ReglasTriaje reglasTriaje) {
+        this.reglasTriaje = reglasTriaje;
+    }
+
+    public TriajeResponse evaluar(TriajeRequest solicitud) {
+        validarRespuestas(solicitud);
+        return reglasTriaje.evaluar(solicitud);
+    }
 
     public void validarRespuestas(TriajeRequest solicitud) {
 

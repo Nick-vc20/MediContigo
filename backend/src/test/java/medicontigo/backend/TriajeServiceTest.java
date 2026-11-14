@@ -1,153 +1,226 @@
-
 package medicontigo.backend;
-
-import medicontigo.backend.dto.TriajeRequest;
-import medicontigo.backend.servicio.TriajeService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import medicontigo.backend.dto.TriajeRequest;
+import medicontigo.backend.dto.TriajeResponse;
+import medicontigo.backend.servicio.ReglasTriaje;
+import medicontigo.backend.servicio.TriajeService;
+
 class TriajeServiceTest {
 
-    private TriajeService servicio;
+    private TriajeService triajeService;
 
     @BeforeEach
-    void preparar() {
-        servicio = new TriajeService();
+    void configurar() {
+        triajeService = new TriajeService(new ReglasTriaje());
     }
 
-    private TriajeRequest solicitudValida() {
+    private TriajeRequest crearSolicitud(
+            String sintoma,
+            String duracion,
+            String intensidad,
+            String adicionales,
+            String alarma
+    ) {
         return new TriajeRequest(
+                sintoma,
+                duracion,
+                intensidad,
+                adicionales,
+                alarma
+        );
+    }
+
+    @Test
+    void debeAceptarRespuestasValidas() {
+        TriajeRequest solicitud = crearSolicitud(
                 "DOLOR_CABEZA",
                 "UNO_TRES_DIAS",
                 "LEVE",
                 "Cansancio",
                 "NO"
         );
-    }
 
-    @Test
-    void debeAceptarCuestionarioValido() {
-        assertDoesNotThrow(
-                () -> servicio.validarRespuestas(solicitudValida())
+        assertDoesNotThrow(() ->
+                triajeService.validarRespuestas(solicitud)
         );
     }
 
     @Test
-    void debeRechazarCuestionarioNulo() {
-        ResponseStatusException error = assertThrows(
+    void debeRechazarSolicitudNula() {
+        ResponseStatusException excepcion = assertThrows(
                 ResponseStatusException.class,
-                () -> servicio.validarRespuestas(null)
+                () -> triajeService.validarRespuestas(null)
         );
 
-        assertEquals(400, error.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, excepcion.getStatusCode());
     }
 
     @Test
     void debeRechazarSintomaInvalido() {
-        TriajeRequest solicitud = new TriajeRequest(
-                "SINTOMA_DESCONOCIDO",
+        TriajeRequest solicitud = crearSolicitud(
+                "INVALIDO",
                 "UNO_TRES_DIAS",
                 "LEVE",
-                null,
+                "",
                 "NO"
         );
 
-        ResponseStatusException error = assertThrows(
+        ResponseStatusException excepcion = assertThrows(
                 ResponseStatusException.class,
-                () -> servicio.validarRespuestas(solicitud)
+                () -> triajeService.validarRespuestas(solicitud)
         );
 
-        assertEquals(400, error.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, excepcion.getStatusCode());
     }
 
     @Test
     void debeRechazarDuracionInvalida() {
-        TriajeRequest solicitud = new TriajeRequest(
-                "DOLOR_CABEZA",
-                "DURACION_DESCONOCIDA",
-                "LEVE",
-                null,
+        TriajeRequest solicitud = crearSolicitud(
+                "FIEBRE",
+                "INVALIDO",
+                "MODERADA",
+                "",
                 "NO"
         );
 
-        ResponseStatusException error = assertThrows(
+        ResponseStatusException excepcion = assertThrows(
                 ResponseStatusException.class,
-                () -> servicio.validarRespuestas(solicitud)
+                () -> triajeService.validarRespuestas(solicitud)
         );
 
-        assertEquals(400, error.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, excepcion.getStatusCode());
     }
 
     @Test
     void debeRechazarIntensidadInvalida() {
-        TriajeRequest solicitud = new TriajeRequest(
-                "DOLOR_CABEZA",
-                "UNO_TRES_DIAS",
-                "INTENSIDAD_DESCONOCIDA",
-                null,
+        TriajeRequest solicitud = crearSolicitud(
+                "TOS",
+                "MENOS_24_HORAS",
+                "INVALIDO",
+                "",
                 "NO"
         );
 
-        ResponseStatusException error = assertThrows(
+        ResponseStatusException excepcion = assertThrows(
                 ResponseStatusException.class,
-                () -> servicio.validarRespuestas(solicitud)
+                () -> triajeService.validarRespuestas(solicitud)
         );
 
-        assertEquals(400, error.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, excepcion.getStatusCode());
     }
 
     @Test
     void debeRechazarSenalesAlarmaInvalidas() {
-        TriajeRequest solicitud = new TriajeRequest(
-                "DOLOR_CABEZA",
+        TriajeRequest solicitud = crearSolicitud(
+                "FIEBRE",
                 "UNO_TRES_DIAS",
                 "LEVE",
-                null,
-                "RESPUESTA_INVALIDA"
+                "",
+                "INVALIDO"
         );
 
-        ResponseStatusException error = assertThrows(
+        ResponseStatusException excepcion = assertThrows(
                 ResponseStatusException.class,
-                () -> servicio.validarRespuestas(solicitud)
+                () -> triajeService.validarRespuestas(solicitud)
         );
 
-        assertEquals(400, error.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, excepcion.getStatusCode());
     }
 
     @Test
-    void debeRechazarDescripcionMuyLarga() {
-        TriajeRequest solicitud = new TriajeRequest(
+    void debeRechazarSintomasAdicionalesMuyLargos() {
+        TriajeRequest solicitud = crearSolicitud(
                 "DOLOR_CABEZA",
                 "UNO_TRES_DIAS",
                 "LEVE",
-                "A".repeat(501),
+                "a".repeat(501),
                 "NO"
         );
 
-        ResponseStatusException error = assertThrows(
+        ResponseStatusException excepcion = assertThrows(
                 ResponseStatusException.class,
-                () -> servicio.validarRespuestas(solicitud)
+                () -> triajeService.validarRespuestas(solicitud)
         );
 
-        assertEquals(400, error.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, excepcion.getStatusCode());
     }
 
     @Test
-    void debeAceptarDescripcionDe500Caracteres() {
-        TriajeRequest solicitud = new TriajeRequest(
+    void debeAceptarQuinientosCaracteresAdicionales() {
+        TriajeRequest solicitud = crearSolicitud(
                 "DOLOR_CABEZA",
                 "UNO_TRES_DIAS",
                 "LEVE",
-                "A".repeat(500),
+                "a".repeat(500),
                 "NO"
         );
 
-        assertDoesNotThrow(
-                () -> servicio.validarRespuestas(solicitud)
+        assertDoesNotThrow(() ->
+                triajeService.validarRespuestas(solicitud)
         );
+    }
+
+    @Test
+    void debeAdvertirCuandoReportaSenalesAlarma() {
+        TriajeRequest solicitud = crearSolicitud(
+                "DOLOR_ABDOMINAL",
+                "MENOS_24_HORAS",
+                "INTENSA",
+                "",
+                "SI"
+        );
+
+        TriajeResponse respuesta = triajeService.evaluar(solicitud);
+
+        assertEquals("ALERTA_REPORTADA", respuesta.nivelOrientacion());
+        assertTrue(respuesta.requiereAtencionInmediata());
+        assertNotNull(respuesta.mensaje());
+        assertNull(respuesta.especialidadSugerida());
+    }
+
+    @Test
+    void debeOrientarCuandoNoEstaSeguroDeLasSenales() {
+        TriajeRequest solicitud = crearSolicitud(
+                "MALESTAR_GENERAL",
+                "UNO_TRES_DIAS",
+                "MODERADA",
+                "",
+                "NO_SE"
+        );
+
+        TriajeResponse respuesta = triajeService.evaluar(solicitud);
+
+        assertEquals("ALERTA_NO_CONFIRMADA", respuesta.nivelOrientacion());
+        assertFalse(respuesta.requiereAtencionInmediata());
+        assertNotNull(respuesta.mensaje());
+        assertNull(respuesta.especialidadSugerida());
+    }
+
+    @Test
+    void noDebeAsignarClasificacionClinicaSinReglasValidadas() {
+        TriajeRequest solicitud = crearSolicitud(
+                "TOS",
+                "CUATRO_SIETE_DIAS",
+                "LEVE",
+                "",
+                "NO"
+        );
+
+        TriajeResponse respuesta = triajeService.evaluar(solicitud);
+
+        assertEquals(
+                "SIN_CLASIFICACION_CLINICA",
+                respuesta.nivelOrientacion()
+        );
+        assertFalse(respuesta.requiereAtencionInmediata());
+        assertNotNull(respuesta.mensaje());
+        assertNull(respuesta.especialidadSugerida());
     }
 }

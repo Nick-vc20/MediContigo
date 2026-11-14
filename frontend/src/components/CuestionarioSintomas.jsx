@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -6,13 +5,18 @@ import { validarCuestionario } from "../api/triajeApi";
 
 import "../cuestionario.css";
 
-
 const ESTADO_INICIAL = {
     sintomaPrincipal: "",
     duracion: "",
     intensidad: "",
     sintomasAdicionales: "",
     senalesAlarma: "",
+};
+
+const NIVELES_ORIENTACION = {
+    ALERTA_REPORTADA: "Señal de alarma reportada",
+    ALERTA_NO_CONFIRMADA: "Señales de alarma no confirmadas",
+    SIN_CLASIFICACION_CLINICA: "Orientación general",
 };
 
 export default function CuestionarioSintomas() {
@@ -44,17 +48,12 @@ export default function CuestionarioSintomas() {
         setError("");
 
         try {
-            // Enviamos las cinco respuestas al backend
             const respuestaServidor = await validarCuestionario(respuestas);
-
-            // Mostramos la confirmación enviada por Spring Boot
             setResultado(respuestaServidor);
-
         } catch (err) {
             setError(
-                err.message || "Ocurrió un error al validar el cuestionario"
+                err.message || "Ocurrió un error al procesar el cuestionario"
             );
-
         } finally {
             setEnviando(false);
         }
@@ -100,7 +99,6 @@ export default function CuestionarioSintomas() {
                     onSubmit={enviar}
                 >
 
-                    {/* Pregunta 1 */}
                     <div className="cuestionario-campo">
 
                         <label htmlFor="sintomaPrincipal">
@@ -147,7 +145,6 @@ export default function CuestionarioSintomas() {
 
                     </div>
 
-                    {/* Pregunta 2 */}
                     <div className="cuestionario-campo">
 
                         <label htmlFor="duracion">
@@ -186,7 +183,6 @@ export default function CuestionarioSintomas() {
 
                     </div>
 
-                    {/* Pregunta 3 */}
                     <div className="cuestionario-campo">
 
                         <label htmlFor="intensidad">
@@ -221,7 +217,6 @@ export default function CuestionarioSintomas() {
 
                     </div>
 
-                    {/* Pregunta 4 */}
                     <div className="cuestionario-campo">
 
                         <label htmlFor="sintomasAdicionales">
@@ -242,7 +237,6 @@ export default function CuestionarioSintomas() {
 
                     </div>
 
-                    {/* Pregunta 5 */}
                     <div className="cuestionario-campo">
 
                         <label htmlFor="senalesAlarma">
@@ -277,7 +271,6 @@ export default function CuestionarioSintomas() {
 
                     </div>
 
-                    {/* Aviso de seguridad */}
                     <div className="cuestionario-alerta" role="note">
 
                         <strong>Importante:</strong>
@@ -292,7 +285,6 @@ export default function CuestionarioSintomas() {
 
                     </div>
 
-                    {/* Botones */}
                     <div className="cuestionario-botones">
 
                         <button
@@ -300,8 +292,8 @@ export default function CuestionarioSintomas() {
                             disabled={enviando}
                         >
                             {enviando
-                                ? "Validando respuestas..."
-                                : "Revisar respuestas"
+                                ? "Procesando respuestas..."
+                                : "Obtener orientación"
                             }
                         </button>
 
@@ -317,45 +309,65 @@ export default function CuestionarioSintomas() {
 
                 </form>
 
-                {/* Mensaje de error del backend */}
                 {error && (
                     <div
                         className="cuestionario-alerta"
                         role="alert"
                     >
-                        <strong>No se pudo validar el cuestionario</strong>
+                        <strong>No se pudo procesar el cuestionario</strong>
                         <p>{error}</p>
                     </div>
                 )}
 
-                {/* Resultado recibido del backend */}
                 {resultado && (
                     <section
                         className="cuestionario-resultado"
                         aria-live="polite"
                     >
-                        <h2>Cuestionario validado</h2>
+
+                        <h2>Resultado de orientación</h2>
 
                         <p>
-                            <strong>Estado:</strong>{" "}
-                            {resultado.estado}
+                            <strong>Nivel de orientación:</strong>{" "}
+                            {NIVELES_ORIENTACION[resultado.nivelOrientacion]
+                                || resultado.nivelOrientacion}
                         </p>
 
                         <p>
                             {resultado.mensaje}
                         </p>
 
+                        {resultado.especialidadSugerida && (
+                            <p>
+                                <strong>Especialidad sugerida:</strong>{" "}
+                                {resultado.especialidadSugerida}
+                            </p>
+                        )}
+
+                        {resultado.requiereAtencionInmediata && (
+                            <div
+                                className="cuestionario-alerta"
+                                role="alert"
+                            >
+                                <strong>Atención médica inmediata</strong>
+
+                                <p>
+                                    Has reportado una señal de alarma.
+                                    Busca atención médica de emergencia.
+                                </p>
+                            </div>
+                        )}
+
                         <p>
-                            Las respuestas fueron verificadas por
-                            el servidor de MediContigo.
+                            Esta orientación no constituye un diagnóstico
+                            médico ni reemplaza una evaluación profesional.
                         </p>
 
                         <p>
-                            La clasificación médica y las recomendaciones
-                            todavía no están implementadas.
                             Las respuestas no se han guardado
                             en el historial del paciente.
                         </p>
+
                     </section>
                 )}
 

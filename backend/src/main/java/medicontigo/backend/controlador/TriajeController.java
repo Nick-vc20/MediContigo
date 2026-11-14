@@ -1,6 +1,5 @@
 package medicontigo.backend.controlador;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,11 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import medicontigo.backend.dto.TriajeRequest;
+import medicontigo.backend.dto.TriajeResponse;
 import medicontigo.backend.servicio.TriajeService;
 
-import java.util.Map;
-
-// HU-11: recepción y validación del cuestionario de síntomas
 @RestController
 @RequestMapping("/api/triaje")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -26,16 +23,10 @@ public class TriajeController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> validarCuestionario(
-            @RequestBody TriajeRequest solicitud) {
-
-        triajeService.validarRespuestas(solicitud);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                Map.of(
-                        "estado", "VALIDADO",
-                        "mensaje", "Las respuestas del cuestionario son validas"
-                )
-        );
+    public ResponseEntity<TriajeResponse> evaluarCuestionario(
+            @RequestBody TriajeRequest solicitud
+    ) {
+        TriajeResponse respuesta = triajeService.evaluar(solicitud);
+        return ResponseEntity.ok(respuesta);
     }
 }
