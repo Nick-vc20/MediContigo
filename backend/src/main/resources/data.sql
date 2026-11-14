@@ -7081,3 +7081,25 @@ INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado,
 VALUES (1, 'Raúl Paredes', 1, 'Pésimo servicio, son unos inútiles. Llámame al 987654321 y te cuento.', 'PENDIENTE', TIMESTAMP '2026-11-11 19:05:00', 'LENGUAJE_OFENSIVO,DATOS_PERSONALES');
 INSERT INTO resenas (centro_id, nombre_paciente, puntuacion, comentario, estado, fecha_creacion, alertas_contenido)
 VALUES (3, 'Ana Torres', 5, 'Excelente clínica!!!!!! visiten www.descuentos-salud.com para promociones', 'PENDIENTE', TIMESTAMP '2026-11-12 08:30:00', 'ENLACE_EXTERNO,SPAM');
+-- HU-08: tarifas referenciales de demostracion por especialidad
+INSERT INTO tarifa (especialidad_id, precio_aproximado, moneda)
+SELECT
+    e.id,
+    CASE
+        WHEN LOWER(e.nombre) = 'medicina general' THEN 50.00
+        WHEN LOWER(e.nombre) = 'pediatría' THEN 65.00
+        WHEN LOWER(e.nombre) = 'ginecología' THEN 80.00
+        WHEN LOWER(e.nombre) = 'cardiología' THEN 100.00
+        WHEN LOWER(e.nombre) = 'traumatología' THEN 90.00
+        WHEN LOWER(e.nombre) = 'dermatología' THEN 85.00
+        WHEN LOWER(e.nombre) = 'odontología' THEN 60.00
+        WHEN LOWER(e.nombre) = 'psicología' THEN 70.00
+        ELSE 75.00
+    END,
+    'PEN'
+FROM especialidad e
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM tarifa t
+    WHERE t.especialidad_id = e.id
+);
