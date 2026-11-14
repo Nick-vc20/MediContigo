@@ -60,50 +60,43 @@ public class TriajeService {
             );
         }
 
-        validarOpcion(
-                solicitud.sintomaPrincipal(),
-                SINTOMAS,
-                "El sintoma principal no es valido"
-        );
+        if (solicitud.sintomaPrincipal() == null
+                || !SINTOMAS.contains(solicitud.sintomaPrincipal())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El sintoma principal no es valido"
+            );
+        }
 
-        validarOpcion(
-                solicitud.duracion(),
-                DURACIONES,
-                "La duracion no es valida"
-        );
+        if (solicitud.duracion() == null
+                || !DURACIONES.contains(solicitud.duracion())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La duracion no es valida"
+            );
+        }
 
-        validarOpcion(
-                solicitud.intensidad(),
-                INTENSIDADES,
-                "La intensidad no es valida"
-        );
+        if (solicitud.intensidad() == null
+                || !INTENSIDADES.contains(solicitud.intensidad())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La intensidad no es valida"
+            );
+        }
 
-        validarOpcion(
-                solicitud.senalesAlarma(),
-                SENALES_ALARMA,
-                "La respuesta sobre senales de alarma no es valida"
-        );
+        if (solicitud.senalesAlarma() == null
+                || !SENALES_ALARMA.contains(solicitud.senalesAlarma())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La respuesta sobre senales de alarma no es valida"
+            );
+        }
 
         if (solicitud.sintomasAdicionales() != null
                 && solicitud.sintomasAdicionales().length() > 500) {
-
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Los sintomas adicionales no pueden superar 500 caracteres"
-            );
-        }
-    }
-
-    private void validarOpcion(
-            String valor,
-            Set<String> opcionesPermitidas,
-            String mensajeError
-    ) {
-
-        if (valor == null || !opcionesPermitidas.contains(valor)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    mensajeError
             );
         }
     }
