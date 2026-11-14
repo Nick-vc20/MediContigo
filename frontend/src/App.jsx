@@ -12,6 +12,10 @@ import RegistroPaciente from "./components/RegistroPaciente";
 import LoginPaciente from "./components/LoginPaciente";
 import MiCuenta from "./components/MiCuenta";
 import RutaPaciente from "./components/RutaPaciente";
+
+// HU-11: Cuestionario de orientación según síntomas
+import CuestionarioSintomas from "./components/CuestionarioSintomas";
+
 import { useSesionPaciente } from "./auth/sesionPaciente";
 
 import "./App.css";
@@ -36,8 +40,14 @@ export default function App() {
                     element={
                         <div>
                             <nav className="mapa-enlace" aria-label="Acceso de usuarios">
+
+                                {/* HU-11: Acceso al cuestionario de síntomas */}
+                                <Link className="mapa-boton" to="/triaje">
+                                    Orientación por síntomas
+                                </Link>
+
                                 {sesionPaciente ? (
-                                    // HU-18: con sesión de paciente solo se muestra su cuenta
+                                    // HU-18: con sesión de paciente se muestra su cuenta
                                     <Link className="mapa-boton principal" to="/paciente/cuenta">
                                         <span aria-hidden="true">👤</span>
                                         Mi cuenta ({sesionPaciente.paciente?.nombreCompleto})
@@ -55,10 +65,18 @@ export default function App() {
                                         </Link>
                                     </>
                                 )}
+
                             </nav>
+
                             <MapaCentros />
                         </div>
                     }
+                />
+
+                {/* HU-11: Orientación al paciente según sus síntomas */}
+                <Route
+                    path="/triaje"
+                    element={<CuestionarioSintomas />}
                 />
 
                 {/* HU-06: Perfil publico de un centro medico */}
@@ -68,10 +86,16 @@ export default function App() {
                 />
 
                 {/* HU-17: Registro de paciente */}
-                <Route path="/paciente/registro" element={<RegistroPaciente />} />
+                <Route
+                    path="/paciente/registro"
+                    element={<RegistroPaciente />}
+                />
 
                 {/* HU-18: Inicio de sesión del paciente */}
-                <Route path="/paciente/login" element={<LoginPaciente />} />
+                <Route
+                    path="/paciente/login"
+                    element={<LoginPaciente />}
+                />
 
                 {/* HU-18: Rutas privadas del paciente (historial y reseñas) */}
                 <Route
@@ -89,7 +113,9 @@ export default function App() {
                     element={
                         logueado ? (
                             <>
-                                <Link to="/">Ver mapa de centros medicos</Link>
+                                <Link to="/">
+                                    Ver mapa de centros medicos
+                                </Link>
 
                                 <Administrador
                                     alCerrarSesion={() => setLogueado(false)}
