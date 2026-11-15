@@ -82,14 +82,9 @@ export default function MiCuenta() {
                         {error}
                     </p>
                 )}
-
-                <section className="panel-tarjeta cuenta-seccion">
-                    <h3>Mi historial de triaje</h3>
-                    <p className="cuenta-vacio">
-                        <HistorialTriaje />
-                    </p>
-                </section>
-
+                
+                <HistorialTriaje />
+                
                 <section className="panel-tarjeta cuenta-seccion">
                     <h3>Mis reseñas</h3>
                     {resenas === null && !error && <p className="cuenta-vacio">Cargando...</p>}
