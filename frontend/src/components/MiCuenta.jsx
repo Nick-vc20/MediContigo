@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { cerrarSesionPaciente, obtenerMiPerfil, obtenerMisResenas } from "../api/pacientesApi";
 import { cerrarSesionLocal, useSesionPaciente } from "../auth/sesionPaciente";
+import HistorialTriaje from "./HistorialTriaje";
 import "../login.css";
 import "../paciente.css";
+
 
 const ESTADOS = {
     PENDIENTE: "Pendiente de revisión",
@@ -84,8 +86,7 @@ export default function MiCuenta() {
                 <section className="panel-tarjeta cuenta-seccion">
                     <h3>Mi historial de triaje</h3>
                     <p className="cuenta-vacio">
-                        Aún no tienes resultados de triaje guardados. Aquí aparecerán cuando uses el
-                        asistente de triaje por síntomas.
+                        <HistorialTriaje />
                     </p>
                 </section>
 

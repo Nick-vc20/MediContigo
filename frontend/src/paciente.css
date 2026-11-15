@@ -255,3 +255,63 @@
   text-decoration: none;
   text-align: center;
 }
+
+/* HU-12: historial de triaje */
+.triaje-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.triaje-lista li {
+  padding: 14px 0;
+  border-top: 1px solid #eceef7;
+}
+
+.triaje-lista li:first-child {
+  border-top: none;
+}
+
+.triaje-lista p {
+  margin: 6px 0;
+  color: #1c2140;
+}
+
+.triaje-lista small {
+  color: #8a8fab;
+}
+
+.triaje-nivel {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.triaje-nivel.nivel-baja { background: #e8f6ee; color: #1e7a46; }
+.triaje-nivel.nivel-media { background: #fff6dc; color: #7a5a00; }
+.triaje-nivel.nivel-alta { background: #fdecea; color: #b42318; }
+.triaje-nivel.nivel-emergencia { background: #b42318; color: #ffffff; }
+
+.triaje-ver-mas {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #232b5d;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.triaje-recomendacion {
+  background: #f5f6fb;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.triaje-aviso {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #8a8fab;
+}
