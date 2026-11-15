@@ -1,0 +1,93 @@
+.cuestionario {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+}
+
+.cuestionario-introduccion {
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.cuestionario-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.cuestionario-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cuestionario-campo label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #243449;
+}
+
+.cuestionario-campo select,
+.cuestionario-campo textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #243449;
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.cuestionario-campo select:focus,
+.cuestionario-campo textarea:focus {
+    outline: 2px solid #0d9488;
+    outline-offset: 2px;
+}
+
+.cuestionario-alerta {
+    padding: 16px 20px;
+    background: #fff7df;
+    border-left: 4px solid #f5b942;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.cuestionario-botones {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cuestionario-botones button {
+    padding: 13px 22px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cuestionario-resultado {
+    margin-top: 28px;
+    padding: 20px;
+    background: #e9f8f5;
+    border: 1px solid #a7e4d7;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .cuestionario {
+        margin: 16px;
+        padding: 24px;
+    }
+
+    .cuestionario-botones {
+        flex-direction: column;
+    }
+
+    .cuestionario-botones button {
+        width: 100%;
+    }
+}
