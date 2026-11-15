@@ -12,7 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 // HU-17 / HU-18 / HU-14: respuesta de error uniforme {status, message} para los endpoints del paciente
 // y para la moderación de reseñas del administrador
 @RestControllerAdvice(assignableTypes = {
-    PacienteAuthController.class, PacienteController.class, ModeracionResenaController.class })
+    PacienteAuthController.class, PacienteController.class, ModeracionResenaController.class,
+    HistorialTriajeController.class })
 public class PacienteErrores {
 
     @ExceptionHandler(ResponseStatusException.class)
