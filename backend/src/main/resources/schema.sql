@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS historial_triaje (
 
     sintomas VARCHAR(500) NOT NULL,
 
-    nivel_urgencia VARCHAR(20) NOT NULL,
+    nivel_urgencia VARCHAR(30) NOT NULL,
 
     especialidad_recomendada VARCHAR(100),
 
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS historial_triaje (
         REFERENCES pacientes(id),
 
     CONSTRAINT chk_triaje_urgencia
-        CHECK (nivel_urgencia IN ('BAJA', 'MEDIA', 'ALTA', 'EMERGENCIA'))
+        CHECK (nivel_urgencia IN ('ALERTA_REPORTADA', 'ALERTA_NO_CONFIRMADA', 'SIN_CLASIFICACION_CLINICA'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_triaje_paciente_fecha
