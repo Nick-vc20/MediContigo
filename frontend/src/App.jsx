@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Administrador from "./components/Administrador";
 import Especialidades from "./components/Especialidades";
 import ModeracionResenas from "./components/ModeracionResenas";
+import Dashboard from "./components/Dashboard";
 import MapaCentros from "./components/MapaCentros";
 import PerfilCentroPublico from "./components/PerfilCentroPublico";
 import RegistroPaciente from "./components/RegistroPaciente";
@@ -128,6 +129,11 @@ export default function App() {
                                     <ModeracionResenas
                                         alExpirarSesion={() => setLogueado(false)}
                                     />
+                                </div>
+
+                                {/* HU-15: Dashboard de metricas para administradores */}
+                                <div className="panel-contenido">
+                                    <Dashboard />
                                 </div>
                             </>
                         ) : (

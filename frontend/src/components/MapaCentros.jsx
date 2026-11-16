@@ -4,9 +4,10 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 
-
-import { buscarCentrosFiltrados, obtenerOpcionesFiltros } from "../api/centrosApi";
-
+import {
+    buscarCentrosFiltrados,
+    obtenerOpcionesFiltros,
+    registrarBusquedaDashboard} from "../api/centrosApi";
 
 import { TIPOS_LEYENDA, estiloTipo, formatoCosto, ocupacionDe } from "../utils/formato";
 import PerfilCentro from "./PerfilCentro";
@@ -84,6 +85,9 @@ function MapaCentros() {
     const [filtros, setFiltros] = useState({
       ...FILTROS_VACIOS
     });
+
+    const [zonaBusqueda, setZonaBusqueda] = useState("");
+
 
     const [opciones, setOpciones] = useState({
      especialidades: [],
@@ -193,16 +197,34 @@ useEffect(() => {
     };
 }, [origen, radio]);
 
-function aplicarFiltros(e) {
-    e.preventDefault();
-    setSeleccionadoId(null);
-    setFiltros({ ...borrador });
-}
+
+    function aplicarFiltros(e) {
+        e.preventDefault();
+
+        setSeleccionadoId(null);
+        setFiltros({ ...borrador });
+
+        // HU-15: Registrar la busqueda confirmada por el usuario
+        if (borrador.especialidad?.trim()) {
+            registrarBusquedaDashboard(
+                borrador.especialidad,
+                zonaBusqueda
+            )
+                .catch(error => {
+                    console.warn(
+                        "No se pudo registrar la busqueda:",
+                        error
+                    );
+                });
+        }
+    }
+
 
 function limpiarFiltros() {
     setBorrador({ ...FILTROS_VACIOS });
     setFiltros({ ...FILTROS_VACIOS });
     setSeleccionadoId(null);
+    setZonaBusqueda("");
 }
 
 
@@ -329,6 +351,27 @@ function limpiarFiltros() {
             ))}
         </select>
     </label>
+
+
+    {/* HU-15: Zona de interes para estadisticas */}
+    <label>
+        Zona de interés (opcional)
+
+        <select
+            value={zonaBusqueda}
+            onChange={e => setZonaBusqueda(e.target.value)}
+        >
+            <option value="">Sin especificar</option>
+            <option value="Lima Centro">Lima Centro</option>
+            <option value="Lima Norte">Lima Norte</option>
+            <option value="Lima Sur">Lima Sur</option>
+            <option value="Lima Este">Lima Este</option>
+            <option value="Lima Moderna">Lima Moderna</option>
+            <option value="Callao">Callao</option>
+        </select>
+
+    </label>
+
 
     <label>
         Tipo de centro
