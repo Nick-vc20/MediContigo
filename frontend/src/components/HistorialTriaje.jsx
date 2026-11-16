@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import { obtenerMiHistorialTriaje } from "../api/triajesApi";
 
 const NIVELES = {
-    BAJA: "Urgencia baja",
-    MEDIA: "Urgencia media",
-    ALTA: "Urgencia alta",
-    EMERGENCIA: "Emergencia",
+    ALERTA_REPORTADA: "Señal de alarma reportada",
+    ALERTA_NO_CONFIRMADA: "Señales de alarma no confirmadas",
+    SIN_CLASIFICACION_CLINICA: "Orientación general",
 };
 
 function formatearFechaHora(valor) {

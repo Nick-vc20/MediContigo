@@ -10,7 +10,7 @@ import java.util.Set;
 public class ResultadoTriaje {
 
     // Niveles de urgencia permitidos (coinciden con el CHECK de schema.sql)
-    public static final Set<String> NIVELES_URGENCIA = Set.of("BAJA", "MEDIA", "ALTA", "EMERGENCIA");
+    public static final Set<String> NIVELES_URGENCIA = Set.of("ALERTA_REPORTADA", "ALERTA_NO_CONFIRMADA", "SIN_CLASIFICACION_CLINICA");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class ResultadoTriaje {
     @Column(nullable = false, length = 500)
     private String sintomas;
 
-    @Column(name = "nivel_urgencia", nullable = false, length = 20)
+    @Column(name = "nivel_urgencia", nullable = false, length = 30)
     private String nivelUrgencia;
 
     @Column(name = "especialidad_recomendada", length = 100)

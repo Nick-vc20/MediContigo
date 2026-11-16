@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { validarCuestionario } from "../api/triajeApi";
+import { guardarResultadoTriaje } from "../api/triajesApi";      
+import { useSesionPaciente } from "../auth/sesionPaciente";
 
 import "../cuestionario.css";
 
@@ -19,12 +21,34 @@ const NIVELES_ORIENTACION = {
     SIN_CLASIFICACION_CLINICA: "Orientación general",
 };
 
+// HU-12: textos legibles del síntoma principal para guardarlos en el historial
+const SINTOMAS_PRINCIPALES = {
+    DOLOR_CABEZA: "Dolor de cabeza",
+    DOLOR_ABDOMINAL: "Dolor abdominal",
+    FIEBRE: "Fiebre",
+    TOS: "Tos",
+    MALESTAR_GENERAL: "Malestar general",
+    OTRO: "Otro síntoma",
+};
+
+// HU-12: resume los síntomas ingresados (máximo 500 caracteres, igual que la BD)
+function describirSintomas(r) {
+    const principal = SINTOMAS_PRINCIPALES[r.sintomaPrincipal] ?? r.sintomaPrincipal;
+    const texto = [principal, r.sintomasAdicionales]
+        .map((s) => s?.trim())
+        .filter(Boolean)
+        .join(". ");
+    return texto.slice(0, 500);
+}
+
 export default function CuestionarioSintomas() {
 
     const [respuestas, setRespuestas] = useState(ESTADO_INICIAL);
     const [resultado, setResultado] = useState(null);
     const [error, setError] = useState("");
     const [enviando, setEnviando] = useState(false);
+    const sesion = useSesionPaciente();
+    const [guardado, setGuardado] = useState(null);
 
     function actualizar(campo, valor) {
         setRespuestas((anterior) => ({
@@ -34,6 +58,7 @@ export default function CuestionarioSintomas() {
 
         setResultado(null);
         setError("");
+        setGuardado(null);
     }
 
     async function enviar(evento) {
@@ -46,10 +71,24 @@ export default function CuestionarioSintomas() {
         setEnviando(true);
         setResultado(null);
         setError("");
+        setGuardado(null);
 
         try {
             const respuestaServidor = await validarCuestionario(respuestas);
             setResultado(respuestaServidor);
+            if (sesion) {
+                try {
+                    await guardarResultadoTriaje({
+                        sintomas: describirSintomas(respuestas),
+                        nivelUrgencia: respuestaServidor.nivelOrientacion,
+                        especialidadRecomendada: respuestaServidor.especialidadSugerida,
+                        recomendacion: respuestaServidor.mensaje,
+                    });
+                    setGuardado("ok");
+                } catch {
+                    setGuardado("error"); // el resultado se sigue mostrando aunque no se guarde
+                }
+            }
         } catch (err) {
             setError(
                 err.message || "Ocurrió un error al procesar el cuestionario"
@@ -362,11 +401,26 @@ export default function CuestionarioSintomas() {
                             Esta orientación no constituye un diagnóstico
                             médico ni reemplaza una evaluación profesional.
                         </p>
+                  
+                        {guardado === "ok" && (
+                            <p className="mensaje-exito">
+                                Resultado guardado en tu{" "}
+                                <Link to="/paciente/cuenta">historial de triaje</Link>.
+                            </p>
+                        )}
 
-                        <p>
-                            Las respuestas no se han guardado
-                            en el historial del paciente.
-                        </p>
+                        {guardado === "error" && (
+                            <p className="mensaje-aviso">
+                                No se pudo guardar el resultado en tu historial.
+                            </p>
+                        )}
+
+                        {!sesion && (
+                            <p>
+                                <Link to="/paciente/login">Inicia sesión</Link>{" "}
+                                para guardar este resultado en tu historial.
+                            </p>
+                        )}
 
                     </section>
                 )}

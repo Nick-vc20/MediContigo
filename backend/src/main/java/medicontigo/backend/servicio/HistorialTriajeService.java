@@ -45,7 +45,7 @@ public class HistorialTriajeService {
         String nivel = limpiar(datos.nivelUrgencia()).toUpperCase(Locale.ROOT);
         if (!ResultadoTriaje.NIVELES_URGENCIA.contains(nivel)) {
             throw new IllegalArgumentException(
-                "El nivel de urgencia debe ser BAJA, MEDIA, ALTA o EMERGENCIA");
+                "El nivel de urgencia debe ser ALERTA_REPORTADA, ALERTA_NO_CONFIRMADA o SIN_CLASIFICACION_CLINICA");
         }
 
         String recomendacion = limpiar(datos.recomendacion());

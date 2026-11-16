@@ -288,10 +288,9 @@
   border-radius: 999px;
 }
 
-.triaje-nivel.nivel-baja { background: #e8f6ee; color: #1e7a46; }
-.triaje-nivel.nivel-media { background: #fff6dc; color: #7a5a00; }
-.triaje-nivel.nivel-alta { background: #fdecea; color: #b42318; }
-.triaje-nivel.nivel-emergencia { background: #b42318; color: #ffffff; }
+.triaje-nivel.nivel-alerta_reportada { background: #b42318; color: #ffffff; }
+.triaje-nivel.nivel-alerta_no_confirmada { background: #fff6dc; color: #7a5a00; }
+.triaje-nivel.nivel-sin_clasificacion_clinica { background: #e8f6ee; color: #1e7a46; }
 
 .triaje-ver-mas {
   background: none;

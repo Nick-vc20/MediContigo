@@ -75,10 +75,10 @@ class HistorialTriajeTest {
 
     @Test
     void guardarTriajeLoPersisteAsociadoAlPaciente() throws Exception {
-        String cuerpo = guardar(tokenPaciente, triaje("Fiebre y dolor de cabeza", "media"))
+        String cuerpo = guardar(tokenPaciente, triaje("Fiebre y dolor de cabeza", "alerta_no_confirmada"))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNumber())
-            .andExpect(jsonPath("$.nivelUrgencia").value("MEDIA"))
+            .andExpect(jsonPath("$.nivelUrgencia").value("ALERTA_NO_CONFIRMADA"))
             .andExpect(jsonPath("$.fechaTriaje").isNotEmpty())
             .andReturn().getResponse().getContentAsString();
 
@@ -94,8 +94,8 @@ class HistorialTriajeTest {
 
     @Test
     void elHistorialSeListaDelMasRecienteAlMasAntiguo() throws Exception {
-        guardar(tokenPaciente, triaje("Tos leve", "BAJA")).andExpect(status().isCreated());
-        guardar(tokenPaciente, triaje("Dolor de pecho intenso", "EMERGENCIA")).andExpect(status().isCreated());
+        guardar(tokenPaciente, triaje("Tos leve", "SIN_CLASIFICACION_CLINICA")).andExpect(status().isCreated());
+        guardar(tokenPaciente, triaje("Dolor de pecho intenso", "ALERTA_REPORTADA")).andExpect(status().isCreated());
 
         mvc.perform(get(RUTA).header("Authorization", "Bearer " + tokenPaciente))
             .andExpect(status().isOk())
@@ -115,7 +115,7 @@ class HistorialTriajeTest {
 
     @Test
     void cadaPacienteSoloVeSuPropioHistorial() throws Exception {
-        String cuerpo = guardar(tokenPaciente, triaje("Dolor de garganta", "BAJA"))
+        String cuerpo = guardar(tokenPaciente, triaje("Dolor de garganta", "SIN_CLASIFICACION_CLINICA"))
             .andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsString();
         Long idLucia = ((Number) JsonPath.read(cuerpo, "$.id")).longValue();
@@ -139,7 +139,7 @@ class HistorialTriajeTest {
     @Test
     void elPacienteDelTokenEsElDuenoAunqueElCuerpoIntenteOtroId() throws Exception {
         guardar(tokenPaciente, """
-            {"pacienteId": 999, "sintomas": "Mareos", "nivelUrgencia": "ALTA",
+            {"pacienteId": 999, "sintomas": "Mareos", "nivelUrgencia": "ALERTA_REPORTADA",
              "recomendacion": "Acudir a emergencias"}
             """).andExpect(status().isCreated());
 
@@ -154,7 +154,7 @@ class HistorialTriajeTest {
     @Test
     void sinTokenDevuelve401() throws Exception {
         mvc.perform(get(RUTA)).andExpect(status().isUnauthorized());
-        mvc.perform(post(RUTA).contentType(MediaType.APPLICATION_JSON).content(triaje("Fiebre", "BAJA")))
+        mvc.perform(post(RUTA).contentType(MediaType.APPLICATION_JSON).content(triaje("Fiebre", "SIN_CLASIFICACION_CLINICA")))
             .andExpect(status().isUnauthorized());
     }
 
@@ -173,16 +173,16 @@ class HistorialTriajeTest {
 
     @Test
     void datosInvalidosDevuelven400YNoSeGuardanNada() throws Exception {
-        guardar(tokenPaciente, triaje("", "BAJA"))
+        guardar(tokenPaciente, triaje("", "SIN_CLASIFICACION_CLINICA"))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("Los síntomas deben tener entre 3 y 500 caracteres"));
 
         guardar(tokenPaciente, triaje("Fiebre alta", "GRAVE"))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message")
-                .value("El nivel de urgencia debe ser BAJA, MEDIA, ALTA o EMERGENCIA"));
+                .value("El nivel de urgencia debe ser ALERTA_REPORTADA, ALERTA_NO_CONFIRMADA o SIN_CLASIFICACION_CLINICA"));
 
-        guardar(tokenPaciente, "{\"sintomas\": \"Fiebre alta\", \"nivelUrgencia\": \"ALTA\"}")
+        guardar(tokenPaciente, "{\"sintomas\": \"Fiebre alta\", \"nivelUrgencia\": \"ALERTA_REPORTADA\"}")
             .andExpect(status().isBadRequest());
 
         mvc.perform(post(RUTA).header("Authorization", "Bearer " + tokenPaciente)
