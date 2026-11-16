@@ -1,0 +1,89 @@
+/* ====== Registro y selección de centros en el panel de administración (HU-06 mejora) ====== */
+.gc { padding-top: 1rem; }
+
+.gc-ayuda { margin: 0 0 1rem; color: var(--suave); }
+
+.gc-exito {
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  background: #e3f6ef;
+  border: 1px solid #a9dfc9;
+  border-radius: 10px;
+  color: #0b5c4e;
+}
+.gc-exito a { color: var(--azul); font-weight: 600; }
+
+.gc-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  box-shadow: var(--sombra);
+}
+
+.gc-campos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem 1rem;
+}
+.gc-campos label,
+.gc-ubicacion-barra span { font-size: 0.9rem; color: var(--suave); }
+.gc-campos label { display: flex; flex-direction: column; gap: 0.25rem; }
+.gc-campos .gc-ancho { grid-column: 1 / -1; }
+
+.gc-campos input,
+.gc-campos select,
+.gc-selector select {
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  color: var(--texto);
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+.gc-campos input:focus,
+.gc-campos select:focus,
+.gc-selector select:focus {
+  outline: 3px solid rgba(31, 111, 178, 0.25);
+  border-color: var(--azul);
+}
+
+.gc-ubicacion-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.gc-aviso { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--rojo); }
+
+.gc-mapa {
+  height: 320px;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+}
+
+.gc-guardar { align-self: flex-start; }
+
+.gc-separador { margin-top: 2rem; }
+
+.gc-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+}
+.gc-selector select { flex: 1 1 260px; }
+.gc-enlace { font-weight: 600; color: var(--azul); }
+
+.gc-resumen { margin: 0.6rem 0 0; font-size: 0.9rem; color: var(--suave); }
+
+@media (max-width: 640px) {
+  .gc-campos { grid-template-columns: 1fr; }
+}

@@ -44,7 +44,6 @@ public class CentroMedico {
     @Column(name = "nivel_ocupacion")
     private String nivelOcupacion = "BAJO";
     
-    // No se serializa: Especialidad apunta de vuelta al centro y generaria un bucle en el JSON
     @JsonIgnore
     @OneToMany(mappedBy = "centro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Especialidad> especialidades;

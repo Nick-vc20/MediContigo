@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 
 import Login from "./components/Login";
 import Administrador from "./components/Administrador";
-import Especialidades from "./components/Especialidades";
+import GestionCentros from "./components/GestionCentros";
 import ModeracionResenas from "./components/ModeracionResenas";
 import MapaCentros from "./components/MapaCentros";
 import PerfilCentroPublico from "./components/PerfilCentroPublico";
@@ -121,7 +121,8 @@ export default function App() {
                                     alCerrarSesion={() => setLogueado(false)}
                                 />
 
-                                <Especialidades centroId={1} />
+                                {/* Registro de centros y gestión del centro elegido (incluye especialidades y horarios) */}
+                                <GestionCentros />
 
                                 {/* HU-14: Auditoría y moderación de reseñas */}
                                 <div className="panel-contenido">

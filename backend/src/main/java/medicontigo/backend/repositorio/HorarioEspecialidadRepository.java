@@ -1,13 +1,13 @@
 package medicontigo.backend.repositorio;
 
-import medicontigo.backend.modelo.HorarioEspecialidad;
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import medicontigo.backend.modelo.HorarioEspecialidad;
 
 public interface HorarioEspecialidadRepository extends JpaRepository<HorarioEspecialidad, Integer> {
     List<HorarioEspecialidad> findByEspecialidadIdOrderByDiaSemanaAscHoraInicioAsc(int especialidadId);
     List<HorarioEspecialidad> findByEspecialidadIdAndDiaSemana(int especialidadId, int diaSemana);
-
-    // Todos los horarios de un centro (HU-06): evita consultar especialidad por especialidad
     List<HorarioEspecialidad> findByEspecialidadCentroIdOrderByDiaSemanaAscHoraInicioAsc(int centroId);
 }

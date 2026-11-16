@@ -49,9 +49,9 @@ function Login({ alIniciarSesion }) {
         <p>Entra con tu cuenta para gestionar el sistema.</p>
 
         <ul className="login-beneficios">
-          <li>Valderrama no hizo nada</li>
+          <li>Control de acceso </li>
           <li>Modificar centros medicos</li>
-          <li>XD</li>
+          <li>Visualizar reportes</li>
         </ul>
       </div>
 
