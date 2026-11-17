@@ -6,7 +6,7 @@ import { ControlOcupacion } from './ControlOcupacion';
 function Panel({ alCerrarSesion }) {
   const [mensaje, setMensaje] = useState("Cargando...");
   
-  // Extraemos el token fuera del useEffect para poder pasárselo al Control de Ocupación
+  // Se extrae fuera del useEffect para poder pasárselo también al control de ocupación
   const token = localStorage.getItem("token"); 
 
   useEffect(() => {
@@ -55,13 +55,9 @@ function Panel({ alCerrarSesion }) {
           <p>{mensaje}</p>
         </div>
 
-        {/* 10.1 y 10.3: AQUÍ SE INSERTA EL CONTROL DE OCUPACIÓN */}
-        <div className="panel-tarjeta" style={{ marginTop: '20px' }}>
-          <ControlOcupacion 
-            centroId={1} 
-            ocupacionInicial="BAJO" 
-            tokenAdmin={token} 
-          />
+        {/* HU-10 (10.1 y 10.3): control de ocupación conectado al registro de nivel de atención */}
+        <div className="panel-tarjeta panel-ocupacion">
+          <ControlOcupacion tokenAdmin={token} alExpirarSesion={alCerrarSesion} />
         </div>
 
       </div>

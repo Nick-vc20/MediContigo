@@ -1,0 +1,130 @@
+/* ====== HU-10: control de ocupación del administrador ====== */
+/* Colores de nivel iguales a los de .ocupacion-* del mapa, para que admin y paciente vean lo mismo */
+.panel-ocupacion { margin-top: 20px; }
+
+.oc-bajo  { --nivel-texto: #0b6b3a; --nivel-fondo: #d9f4e4; --nivel-borde: #38b26e; }
+.oc-medio { --nivel-texto: #7a5b00; --nivel-fondo: #fff1c2; --nivel-borde: #e0b020; }
+.oc-alto  { --nivel-texto: #9b1c2a; --nivel-fondo: #fde0e3; --nivel-borde: #d6485a; }
+.oc-desconocido { --nivel-texto: var(--suave); --nivel-fondo: #e8edf0; --nivel-borde: var(--borde); }
+
+.oc h3 { font-size: 1.15rem; color: #1c2140; }
+.oc-ayuda { margin: 0 0 1.1rem; font-size: 0.92rem; color: var(--suave); }
+
+.oc-selector { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
+.oc-selector label { font-size: 0.9rem; color: var(--suave); }
+.oc-selector select {
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  color: var(--texto);
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+.oc-selector select:focus-visible {
+  outline: 3px solid rgba(31, 111, 178, 0.25);
+  border-color: var(--azul);
+}
+
+.oc-actual { margin: 0 0 0.7rem; font-size: 0.95rem; }
+.oc-badge {
+  display: inline-block;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--nivel-texto);
+  background: var(--nivel-fondo);
+  border-radius: 999px;
+}
+
+/* ----- Selector de nivel (radios nativos: se manejan también con flechas del teclado) ----- */
+.oc-niveles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.7rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.oc-nivel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  padding: 0.85rem 0.95rem;
+  color: var(--texto);
+  background: #fff;
+  border: 2px solid var(--borde);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.oc-nivel:hover { border-color: var(--nivel-borde); transform: translateY(-1px); }
+.oc-nivel:has(input:focus-visible) { outline: 3px solid rgba(31, 111, 178, 0.35); outline-offset: 2px; }
+.oc-nivel.activo {
+  color: var(--nivel-texto);
+  background: var(--nivel-fondo);
+  border-color: var(--nivel-borde);
+}
+
+.oc-nivel input { position: absolute; opacity: 0; pointer-events: none; }
+.oc-punto {
+  width: 12px;
+  height: 12px;
+  margin-bottom: 0.35rem;
+  background: var(--nivel-borde);
+  border-radius: 50%;
+}
+.oc-nivel strong { font-size: 1rem; }
+.oc-detalle { font-size: 0.82rem; opacity: 0.85; }
+
+.oc-niveles:disabled .oc-nivel { cursor: progress; transform: none; }
+.oc-niveles:disabled .oc-nivel:not(.activo) { opacity: 0.6; }
+
+.oc-spinner {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--nivel-borde);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: oc-giro 0.7s linear infinite;
+}
+@keyframes oc-giro { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .oc-spinner { animation-duration: 2s; }
+  .oc-nivel { transition: none; }
+}
+
+/* ----- Mensajes ----- */
+.oc-pie { min-height: 2.6rem; margin-top: 0.9rem; }
+.oc-pie p { margin: 0; }
+.oc-estado { margin: 0; font-size: 0.9rem; color: var(--suave); }
+.oc-ok,
+.oc-error {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+}
+.oc-ok { color: #0b5c4e; background: #e3f6ef; border: 1px solid #a9dfc9; }
+.oc-error { color: #b3261e; background: #fdeaea; border: 1px solid #f3c2c0; }
+
+.oc-enlaces { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 0.6rem; }
+.oc-enlaces a { font-weight: 600; color: var(--azul); }
+
+.oc-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .oc-niveles { grid-template-columns: 1fr; }
+}
