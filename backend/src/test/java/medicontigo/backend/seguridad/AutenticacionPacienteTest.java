@@ -209,20 +209,29 @@ class AutenticacionPacienteTest {
             .andExpect(status().isForbidden());
     }
 
+    
     @Test
     void tokenDePacienteNoAccedeARutasDelAdministrador() throws Exception {
         String tokenPaciente = loginPaciente(CORREO, CLAVE);
-        mvc.perform(patch("/api/admin/1/ocupacion").param("nivel", "ALTO")
-                .header("Authorization", bearer(tokenPaciente)))
-            .andExpect(status().isForbidden());
 
-        mvc.perform(patch("/api/admin/1/ocupacion").param("nivel", "ALTO"))
-            .andExpect(status().isUnauthorized());
+        mvc.perform(patch("/api/admin/centros/1/ocupacion")
+            .header("Authorization", bearer(tokenPaciente))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"nivel\":\"ALTO\"}"))
+        .andExpect(status().isForbidden());
 
-        mvc.perform(patch("/api/admin/1/ocupacion").param("nivel", "ALTO")
-                .header("Authorization", bearer(loginAdmin())))
-            .andExpect(status().isOk());
-    }
+        mvc.perform(patch("/api/admin/centros/1/ocupacion")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"nivel\":\"ALTO\"}"))
+        .andExpect(status().isUnauthorized());
+
+        mvc.perform(patch("/api/admin/centros/1/ocupacion")
+            .header("Authorization", bearer(loginAdmin()))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"nivel\":\"ALTO\"}"))
+        .andExpect(status().isOk());
+}
+
 
     @Test
     void lasCredencialesDePacienteNoSirvenEnElLoginDeAdministrador() throws Exception {
