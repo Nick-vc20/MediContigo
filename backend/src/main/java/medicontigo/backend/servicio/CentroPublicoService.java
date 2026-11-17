@@ -42,7 +42,6 @@ public class CentroPublicoService {
         CentroMedico centro = centros.findById(centroId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Centro no encontrado"));
 
-        // Se consultan los horarios y los medicos del centro una sola vez y se agrupan por especialidad
         Map<Integer, List<HorarioPerfil>> horariosPorEspecialidad = horarios
                 .findByEspecialidadCentroIdOrderByDiaSemanaAscHoraInicioAsc(centroId).stream()
                 .collect(Collectors.groupingBy(h -> h.getEspecialidad().getId(),

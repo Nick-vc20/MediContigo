@@ -1,14 +1,22 @@
 package medicontigo.backend.servicio;
 
-import medicontigo.backend.dto.*;
-import medicontigo.backend.modelo.Especialidad;
-import medicontigo.backend.modelo.HorarioEspecialidad;
-import medicontigo.backend.repositorio.*;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.List;
+
+import medicontigo.backend.dto.EspecialidadRequest;
+import medicontigo.backend.dto.EspecialidadResponse;
+import medicontigo.backend.dto.HorarioRequest;
+import medicontigo.backend.dto.HorarioResponse;
+import medicontigo.backend.modelo.Especialidad;
+import medicontigo.backend.modelo.HorarioEspecialidad;
+import medicontigo.backend.repositorio.CentroMedicoRepository;
+import medicontigo.backend.repositorio.EspecialidadRepository;
+import medicontigo.backend.repositorio.HorarioEspecialidadRepository;
+import medicontigo.backend.repositorio.MedicoRepository;
 
 @Service
 public class EspecialidadService {
@@ -25,7 +33,6 @@ public class EspecialidadService {
         this.medicos = medicos;
     }
 
-    // ---------- Especialidades ----------
 
     @Transactional(readOnly = true)
     public List<EspecialidadResponse> listar(int centroId, boolean incluirInactivas) {
@@ -65,7 +72,6 @@ public class EspecialidadService {
         return EspecialidadResponse.desde(especialidades.saveAndFlush(e));
     }
 
-    // Baja lógica (activo = false) o reactivación (activo = true)
     @Transactional
     public EspecialidadResponse cambiarEstado(int centroId, int id, boolean activo) {
         Especialidad e = buscar(centroId, id);
@@ -80,7 +86,6 @@ public class EspecialidadService {
         return EspecialidadResponse.desde(especialidades.saveAndFlush(e));
     }
 
-    // ---------- Bloques horarios ----------
 
     @Transactional(readOnly = true)
     public List<HorarioResponse> listarHorarios(int centroId, int id) {
@@ -98,7 +103,6 @@ public class EspecialidadService {
                     "No se pueden agregar horarios a una especialidad inactiva");
         }
         for (var existente : horarios.findByEspecialidadIdAndDiaSemana(id, solicitud.diaSemana())) {
-            // Se solapan si cada uno empieza antes de que termine el otro (bloques contiguos sí se permiten)
             if (solicitud.horaInicio().isBefore(existente.getHoraFin())
                     && solicitud.horaFin().isAfter(existente.getHoraInicio())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "El bloque se solapa con "
@@ -123,9 +127,7 @@ public class EspecialidadService {
         }
         horarios.delete(h);
     }
-
-    // ---------- Auxiliares ----------
-
+    
     private Especialidad buscar(int centroId, int id) {
         Especialidad e = especialidades.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Especialidad no encontrada"));

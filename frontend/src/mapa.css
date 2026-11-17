@@ -141,3 +141,8 @@
 }
 
 .mapa-enlace { max-width: 1280px; margin: 0 auto; padding: 0.8rem 1rem 0; text-align: right; }
+
+/* Tooltip del marcador con los datos del centro (varias líneas) */
+.leaflet-tooltip.tooltip-centro { max-width: 260px; white-space: normal; }
+.tooltip-centro strong, .tooltip-centro span { display: block; }
+.tooltip-centro span { font-size: 0.8rem; color: #444; }

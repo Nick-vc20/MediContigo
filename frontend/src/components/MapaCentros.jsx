@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip, CircleMarker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
+import { useSearchParams } from "react-router-dom";
 
 import {
     buscarCentrosFiltrados,
     obtenerOpcionesFiltros,
-    registrarBusquedaDashboard} from "../api/centrosApi";
+    obtenerPerfilCentro,
+    registrarBusquedaDashboard
+} from "../api/centrosApi";
 
 import { TIPOS_LEYENDA, estiloTipo, formatoCosto, ocupacionDe } from "../utils/formato";
 import PerfilCentro from "./PerfilCentro";
@@ -74,6 +76,10 @@ function Enfocar({ centro }) {
 
 function MapaCentros() {
 
+    // /?centro=ID abre el mapa centrado en ese centro (enlace desde el panel del administrador)
+    const [parametros] = useSearchParams();
+    const centroEnlace = parametros.get("centro");
+
     const [origen, setOrigen] = useState(null);
     const [etiquetaOrigen, setEtiquetaOrigen] = useState("");
     const [mensajeGPS, setMensajeGPS] = useState("");
@@ -103,6 +109,29 @@ function MapaCentros() {
     const panel = useRef(null);
 
     useEffect(() => {
+        if (centroEnlace) {
+            let vigente = true;
+
+            obtenerPerfilCentro(centroEnlace)
+                .then(perfil => {
+                    if (!vigente) return;
+                    setOrigen([Number(perfil.latitud), Number(perfil.longitud)]);
+                    setEtiquetaOrigen(perfil.nombre);
+                    setRadio(5);
+                    setSeleccionadoId(perfil.id);
+                })
+                .catch(() => {
+                    if (!vigente) return;
+                    setMensajeGPS("No encontramos el centro solicitado. Puedes buscar una direccion.");
+                    setOrigen(ORIGEN_POR_DEFECTO);
+                    setEtiquetaOrigen("Lima Centro");
+                });
+
+            return () => {
+                vigente = false;
+            };
+        }
+
         if (!navigator.geolocation) {
             setMensajeGPS("Tu navegador no permite obtener la ubicacion. Puedes buscar una direccion.");
             setOrigen(ORIGEN_POR_DEFECTO);
@@ -122,7 +151,7 @@ function MapaCentros() {
             },
             { enableHighAccuracy: true, timeout: 10000 }
         );
-    }, []);
+    }, [centroEnlace]);
 
     
 useEffect(() => {
@@ -517,7 +546,15 @@ function limpiarFiltros() {
                                     title={centro.nombre}
                                     eventHandlers={{ click: () => seleccionar(centro.id) }}
                                 >
-                                    <Tooltip direction="top" offset={[0, -16]}>{centro.nombre}</Tooltip>
+                                    <Tooltip direction="top" offset={[0, -16]} className="tooltip-centro">
+                                        <strong>{centro.nombre}</strong>
+                                        <span>{centro.tipo} · {centro.direccion}</span>
+                                        <span>
+                                            {centro.telefono ? `Tel. ${centro.telefono} · ` : ""}
+                                            {formatoCosto(centro.costoConsulta)} · espera {centro.tiempoEspera}
+                                        </span>
+                                        <span>{ocupacionDe(centro.nivelOcupacion).etiqueta}</span>
+                                    </Tooltip>
                                 </Marker>
                             ))}
                         </MapContainer>
