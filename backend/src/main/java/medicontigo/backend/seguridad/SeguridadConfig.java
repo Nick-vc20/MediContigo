@@ -16,13 +16,15 @@ public class SeguridadConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Rutas privadas del paciente: perfil, reseñas, cierre de sesión e historial de triaje
+
         registry.addInterceptor(new InterceptorAutenticacion(jwtService, Rol.PACIENTE))
             .addPathPatterns("/api/paciente/**");
 
-        // Rutas del administrador (excepto el propio login)
+
+
         registry.addInterceptor(new InterceptorAutenticacion(jwtService, Rol.ADMIN))
-            .addPathPatterns("/api/admin/**")
-            .excludePathPatterns("/api/admin/login");
+                .addPathPatterns("/api/admin/**", "/api/analytics/**")
+                .excludePathPatterns("/api/admin/login");
+
     }
 }

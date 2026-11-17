@@ -15,15 +15,13 @@ async function pedir(ruta) {
   return r.json();
 }
 
-// Centros dentro del radio (km), ordenados por distancia
+
 export const buscarCentrosCercanos = (lat, lng, radio) =>
   pedir(`/api/centros?lat=${lat}&lng=${lng}&radio=${radio}`);
 
-// Perfil publico consolidado: datos + especialidades + horarios + personal
 export const obtenerPerfilCentro = (id) => pedir(`/api/publico/centros/${id}`);
 
 
- // HU-07: 
 export const buscarCentrosFiltrados = (lat, lng, radio, filtros = {}) => {
     const params = new URLSearchParams({
         lat: String(lat),
@@ -52,7 +50,6 @@ export const buscarCentrosFiltrados = (lat, lng, radio, filtros = {}) => {
     return pedir(`/api/centros/filtrados?${params.toString()}`);
 };
 
-// Obtener especialidades y tipos disponibles
 export const obtenerOpcionesFiltros = (lat, lng, radio) => {
     const params = new URLSearchParams({
         lat: String(lat),
@@ -62,3 +59,37 @@ export const obtenerOpcionesFiltros = (lat, lng, radio) => {
 
     return pedir(`/api/centros/filtrados/opciones?${params.toString()}`);
 };
+
+
+// HU-15: Registrar busquedas por especialidad y zona
+export async function registrarBusquedaDashboard(
+    especialidad,
+    zona = null
+) {
+    // No registrar si no hay especialidad seleccionada
+    if (!especialidad || !especialidad.trim()) {
+        return;
+    }
+
+    const respuesta = await fetch(
+        `${API}/api/eventos/busquedas`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                especialidad: especialidad.trim(),
+                zona: typeof zona === "string"
+                    ? zona.trim() || null
+                    : null
+            })
+        }
+    );
+
+    if (!respuesta.ok) {
+        throw new Error(
+            "No se pudo registrar la busqueda"
+        );
+    }
+}
