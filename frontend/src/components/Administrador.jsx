@@ -12,7 +12,7 @@ function Panel({ alCerrarSesion }) {
   useEffect(() => {
     async function cargarPanel() {
       try {
-        const respuesta = await fetch("http://localhost:8081/api/panel", {
+        const respuesta = await fetch(`${import.meta.env.VITE_API_URL ?? "http://localhost:8081"}/api/panel`, {
           headers: { Authorization: "Bearer " + token },
         });
 

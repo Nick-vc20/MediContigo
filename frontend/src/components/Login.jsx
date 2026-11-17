@@ -14,7 +14,7 @@ function Login({ alIniciarSesion }) {
     setCargando(true);
 
     try {
-      const respuesta = await fetch("http://localhost:8081/api/admin/login", {
+      const respuesta = await fetch(`${import.meta.env.VITE_API_URL ?? "http://localhost:8081"}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ correo: correo, password: password }),
