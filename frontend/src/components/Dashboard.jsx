@@ -37,9 +37,7 @@ function Dashboard() {
             parametros.append("hasta", fechaHasta);
         }
 
-        const url = `http://localhost:8081/api/analytics/resumen?${parametros}`;
-
-
+        const url = `${import.meta.env.VITE_API_URL ?? "http://localhost:8081"}/api/analytics/resumen?${parametros}`;
         fetch(url, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
