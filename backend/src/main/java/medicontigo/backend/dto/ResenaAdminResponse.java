@@ -5,7 +5,6 @@ import java.util.List;
 
 import medicontigo.backend.modelo.Resena;
 
-// HU-14: reseña vista desde el panel de auditoría (incluye alertas y datos de moderación)
 public record ResenaAdminResponse(
     Long id,
     Integer centroId,

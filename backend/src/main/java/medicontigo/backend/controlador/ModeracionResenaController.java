@@ -3,7 +3,14 @@ package medicontigo.backend.controlador;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.jsonwebtoken.Claims;
@@ -13,10 +20,6 @@ import medicontigo.backend.dto.ResumenModeracionResponse;
 import medicontigo.backend.seguridad.InterceptorAutenticacion;
 import medicontigo.backend.servicio.ModeracionResenaService;
 
-/**
- * HU-14 (14.2): API de auditoría y moderación de reseñas.
- * Protegida por el interceptor de rol ADMIN (/api/admin/**, ver SeguridadConfig).
- */
 @RestController
 @RequestMapping("/api/admin/resenas")
 public class ModeracionResenaController {

@@ -23,7 +23,6 @@ public class AdministradorController {
     @Autowired
     private AdministradorService administradorService;
 
-    // HU-18: el token del administrador ahora incluye el rol ADMIN
     @Autowired
     private JwtService jwtService;
 

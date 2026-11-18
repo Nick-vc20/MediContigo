@@ -14,7 +14,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-// HU-18 (18.2): emisión y validación de tokens JWT con rol (ADMIN o PACIENTE)
 @Service
 public class JwtService {
 

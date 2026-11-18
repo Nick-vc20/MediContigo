@@ -1,9 +1,10 @@
 package medicontigo.backend.dto;
 
 import java.time.LocalDateTime;
+
 import medicontigo.backend.modelo.Resena;
 
-// HU-18: reseña vista desde la cuenta del paciente (incluye el centro y su estado de moderación)
+
 public record MiResenaResponse(
     Long id,
     Integer centroId,
@@ -12,7 +13,6 @@ public record MiResenaResponse(
     String comentario,
     String estado,
     LocalDateTime fechaCreacion,
-    // HU-14: motivo indicado por el administrador al rechazar u ocultar
     String motivoModeracion
 ) {
 

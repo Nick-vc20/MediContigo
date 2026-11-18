@@ -1,9 +1,9 @@
 package medicontigo.backend.dto;
 
 import java.time.LocalDateTime;
+
 import medicontigo.backend.modelo.ResultadoTriaje;
 
-// HU-12: resultado de triaje visto desde la cuenta del paciente
 public record ResultadoTriajeResponse(
     Long id,
     String sintomas,

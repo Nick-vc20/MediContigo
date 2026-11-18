@@ -12,11 +12,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * HU-18 (18.2 / 18.3): exige un token JWT válido con el rol indicado.
- * - Sin token, token vencido, alterado o cerrado → 401
- * - Token válido pero de otro rol (acceso cruzado)  → 403
- */
+
 public class InterceptorAutenticacion implements HandlerInterceptor {
 
     public static final String ATRIBUTO_CLAIMS = "medicontigo.claims";
