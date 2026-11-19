@@ -1,8 +1,12 @@
 package medicontigo.backend;
 
-import medicontigo.backend.dto.*;
-import medicontigo.backend.servicio.EspecialidadService;
-import medicontigo.backend.servicio.MedicoService;
+import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import medicontigo.backend.dto.EspecialidadRequest;
+import medicontigo.backend.dto.EspecialidadResponse;
+import medicontigo.backend.dto.HorarioRequest;
+import medicontigo.backend.dto.MedicoRequest;
+import medicontigo.backend.servicio.EspecialidadService;
+import medicontigo.backend.servicio.MedicoService;
 
 @SpringBootTest
 @Transactional
